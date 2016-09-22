@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import nl.makertim.luckpermsui.DatabaseType;
 import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.MainWindow;
@@ -113,7 +114,11 @@ public class LoginPane extends StackPane {
 			if (!Main.manager.openConnection()) {
 				return;
 			}
-			MainWindow.getView().getPrimaryStage().setScene(new Scene(new MultiView(), 600, 300));
+			Stage stage = MainWindow.getView().getPrimaryStage();
+			stage.setScene(new Scene(new MultiView(), 1024, 768));
+			stage.setMinWidth(840);
+			stage.setMinHeight(768);
+			stage.setMaxHeight(768);
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
 		}

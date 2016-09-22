@@ -16,6 +16,7 @@ public class MainWindow extends Application {
 		this.primaryStage = primaryStage;
 
 		Scene login = new Scene(new LoginPane());
+		primaryStage.setTitle("LuckPerms Unofficial User Interface\u2122");
 		primaryStage.setScene(login);
 
 		primaryStage.show();

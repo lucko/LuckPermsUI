@@ -7,15 +7,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.internal.Group;
-import nl.makertim.luckpermsui.popup.GroupPopup;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class GroupView extends VBox {
 
-	public GroupView() {
+	MultiView parent;
+
+	public GroupView(MultiView multiView) {
 		setup();
+		parent = multiView;
 	}
 
 	private void setup() {
@@ -23,17 +25,17 @@ public class GroupView extends VBox {
 
 		HBox topLine = new HBox();
 		TextField search = new TextField();
-		search.setPromptText("Search group by name");
+		search.setPromptText("Search group by name.");
+		search.setPrefWidth(340);
 
 		ListView<Group> groups = new ListView<>();
+		groups.setPrefWidth(680);
+		groups.setPrefHeight(744);
 		fillGroups(groups, search.getText());
 
 		search.textProperty().addListener(onChange -> fillGroups(groups, search.getText()));
-		groups.setOnMouseClicked(click -> {
-			if (click.getClickCount() >= 2) {
-				new GroupPopup(groups.getSelectionModel().getSelectedItem()).showAndWait();
-			}
-		});
+		groups.setOnMouseClicked(
+			click -> parent.setSideView(new GroupSideView(groups.getSelectionModel().getSelectedItem())));
 
 		topLine.getChildren().addAll(search);
 		getChildren().addAll(topLine, groups);

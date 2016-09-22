@@ -1,13 +1,13 @@
 package nl.makertim.luckpermsui.panes;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
-public class MultiView extends HBox {
+public class MultiView extends BorderPane {
 
 	Pane mainView;
+	Pane sideView;
 
 	public MultiView() {
 		setup();
@@ -16,21 +16,33 @@ public class MultiView extends HBox {
 
 	private void setup() {
 		VBox menu = new VBox(10);
-		mainView = new Pane();
+		mainView = new AnchorPane();
+		sideView = new AnchorPane();
+		sideView.setMinWidth(100);
 
 		Button groupButton = new Button("Groups");
 		Button userButton = new Button("User manager");
 
-		groupButton.setOnAction(action -> setMainView(new GroupView()));
-		// userButton.setOnAction(action -> setMainView(new UserView()));
+		groupButton.setOnAction(action -> setMainView(new GroupView(this)));
+		// userButton.setOnAction(action -> setMainView(new UserView(this)));
 
 		menu.getChildren().addAll(groupButton, userButton);
-		getChildren().addAll(menu, mainView);
+		setLeft(menu);
+		setCenter(mainView);
+		setRight(sideView);
 	}
 
-	private void setMainView(Pane pane) {
+	public void setMainView(Pane pane) {
 		mainView.getChildren().clear();
-		mainView.getChildren().add(pane);
+		if (pane != null) {
+			mainView.getChildren().add(pane);
+		}
 	}
 
+	public void setSideView(Pane pane) {
+		sideView.getChildren().clear();
+		if (pane != null) {
+			sideView.getChildren().add(pane);
+		}
+	}
 }
