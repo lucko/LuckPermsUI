@@ -1,5 +1,7 @@
 package nl.makertim.luckpermsui.panes;
 
+import java.sql.SQLException;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -111,6 +113,13 @@ public class LoginPane extends StackPane {
 		}
 		try {
 			Main.manager.openConnection();
+			Main.manager.executePrepared("SELECT * FROM lp_groups WHERE name = ?", preparedStatement -> {
+				try {
+					preparedStatement.setString(1, "vip");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
 			MainWindow.getView().getPrimaryStage().setScene(new Scene(new MultiView(), 600, 300));
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
