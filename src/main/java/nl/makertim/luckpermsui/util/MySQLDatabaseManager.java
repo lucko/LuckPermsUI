@@ -18,6 +18,11 @@ public class MySQLDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public MySQLDatabaseManager(String url, int port, String username, String password, String database) {
 		super("mysql", url, port, username, password, database);
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	/**

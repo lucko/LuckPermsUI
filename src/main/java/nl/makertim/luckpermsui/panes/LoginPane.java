@@ -1,7 +1,5 @@
 package nl.makertim.luckpermsui.panes;
 
-import java.sql.SQLException;
-
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -98,11 +96,11 @@ public class LoginPane extends StackPane {
 		}
 		switch (type) {
 		case MYSQL:
-			Main.manager = new MySQLDatabaseManager(type.type, host, port, username, password, database);
+			Main.manager = new MySQLDatabaseManager(host, port, username, password, database);
 			break;
 		case SQLITE:
 			// TODO: remove debug
-			Main.manager = new MySQLDatabaseManager("mysql", "localhost", 3306, "stream", "", "test");
+			Main.manager = new MySQLDatabaseManager("localhost", 3306, "stream", "", "test");
 			break;
 		case H2:
 			break;
@@ -112,14 +110,9 @@ public class LoginPane extends StackPane {
 			break;
 		}
 		try {
-			Main.manager.openConnection();
-			Main.manager.executePrepared("SELECT * FROM lp_groups WHERE name = ?", preparedStatement -> {
-				try {
-					preparedStatement.setString(1, "vip");
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			});
+			if (!Main.manager.openConnection()) {
+				return;
+			}
 			MainWindow.getView().getPrimaryStage().setScene(new Scene(new MultiView(), 600, 300));
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
