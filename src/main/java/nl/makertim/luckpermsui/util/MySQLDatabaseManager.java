@@ -1,10 +1,7 @@
 package nl.makertim.luckpermsui.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.function.Consumer;
 
 public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 
@@ -75,10 +72,7 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		this("mysql", url, username, password, database);
 	}
 
-	/**
-	 *
-	 * Open a connection with the credentials
-	 */
+
 	public boolean openConnection() {
 		boolean didOpen = false;
 		try {
@@ -91,10 +85,7 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		return didOpen;
 	}
 
-	/**
-	 *
-	 * Close connection if not already
-	 */
+
 	public boolean closeConnection() {
 		boolean didClose = false;
 		try {
@@ -123,26 +114,25 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		return ret;
 	}
 
-	/**
-	 *
-	 * Make a string save to use in databases, escape all invald or dangerous
-	 * characters
-	 * 
-	 * @param raw
-	 *            The object to make string save
-	 */
+	@Override
+	public ResultSet executePrepared(String query, Consumer<PreparedStatement> prepare) {
+		try {
+			openIfNotClosed();
+			PreparedStatement statement = connection.prepareStatement(query);
+			prepare.accept(statement);
+			statement.executeQuery();
+			return statement.executeQuery(query);
+		} catch (Exception ex) {
+			System.err.println(ex.toString());
+			return null;
+		}
+	}
+
 	public String prepareString(Object raw) {
 		return raw.toString().replaceAll(
 			"\\{|\\}|\\\\|\\,|\\&|\\?|\\(|\\)|\\[|\\]|\\-|\\;|\\~|\\||\\$|\\!|\\<|\\>|\\*|\\%|\\_|\'|\\\"", "\\\\$0");
 	}
 
-	/**
-	 *
-	 * Execute sql
-	 * 
-	 * @param query
-	 *            The SQL that will be executed
-	 */
 	public boolean executeQuery(String query) {
 		try {
 			openIfNotClosed();
@@ -155,13 +145,6 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		return true;
 	}
 
-	/**
-	 *
-	 * Execute SELECT sql
-	 * 
-	 * @param query
-	 *            The SQL that will be executed
-	 */
 	public ResultSet selectQuery(String query) {
 		ResultSet result = null;
 		try {
@@ -174,13 +157,6 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		return result;
 	}
 
-	/**
-	 *
-	 * Execute INSERT sql
-	 * 
-	 * @param query
-	 *            The SQL that will be executed
-	 */
 	public ResultSet insertQuery(String query) {
 		ResultSet result = null;
 		try {
@@ -194,24 +170,10 @@ public class MySQLDatabaseManager implements IDatabaseManager, Runnable {
 		return result;
 	}
 
-	/**
-	 *
-	 * Execute UPDATE sql
-	 * 
-	 * @param query
-	 *            The SQL that will be executed
-	 */
 	public ResultSet updateQuery(String query) {
 		return insertQuery(query);
 	}
 
-	/**
-	 *
-	 * Execute DELETE sql
-	 * 
-	 * @param query
-	 *            The SQL that will be executed
-	 */
 	public ResultSet deleteQuery(String query) {
 		return insertQuery(query);
 	}
