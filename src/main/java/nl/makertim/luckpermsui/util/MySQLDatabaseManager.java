@@ -18,11 +18,7 @@ public class MySQLDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public MySQLDatabaseManager(String url, int port, String username, String password, String database) {
 		super("mysql", url, port, username, password, database);
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
+
 	}
 
 	/**
@@ -39,6 +35,11 @@ public class MySQLDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public MySQLDatabaseManager(String url, String username, String password, String database) {
 		this(url, 3306, username, password, database);
+	}
+
+	@Override
+	public String driverclassToCheck() {
+		return "com.mysql.jdbc.Driver";
 	}
 
 	public String getRawSQLVersion() {

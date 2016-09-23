@@ -28,15 +28,22 @@ public abstract class AbstractDatabaseManager implements IDatabaseManager, Runna
 	 * @param database
 	 *            the name of the database
 	 */
-	public AbstractDatabaseManager(String type, String url, int port, String username, String password, String database) {
+	public AbstractDatabaseManager(String type, String url, int port, String username, String password, String database) throws RuntimeException {
 		this.port = port;
 		this.type = type;
 		this.database = database;
 		this.username = username;
 		this.password = password;
 		this.url = url;
+		try {
+			Class.forName(driverclassToCheck());
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 		new Thread(this).start();
 	}
+
+	public abstract String driverclassToCheck();
 
 	public String getRawSQLVersion() {
 		try {
@@ -79,7 +86,7 @@ public abstract class AbstractDatabaseManager implements IDatabaseManager, Runna
 		try {
 			return connection.prepareStatement(query);
 		} catch (Exception ex) {
-			System.err.println(ex);
+			System.err.println(ex.toString());
 			return null;
 		}
 	}
@@ -94,6 +101,28 @@ public abstract class AbstractDatabaseManager implements IDatabaseManager, Runna
 			System.err.println(ex.toString());
 			return null;
 		}
+	}
+
+	@Override
+	public ResultSet insertPrepared(PreparedStatement prepared) {
+		try {
+			openIfNotClosed();
+			prepared.executeUpdate();
+			return prepared.getGeneratedKeys();
+		} catch (Exception ex) {
+			System.err.println(ex.toString());
+			return null;
+		}
+	}
+
+	@Override
+	public ResultSet updatePrepared(PreparedStatement prepared) {
+		return insertPrepared(prepared);
+	}
+
+	@Override
+	public ResultSet deletePrepared(PreparedStatement prepared) {
+		return insertPrepared(prepared);
 	}
 
 	@Override

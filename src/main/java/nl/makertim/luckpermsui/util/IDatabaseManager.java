@@ -50,6 +50,12 @@ public interface IDatabaseManager {
 
 	ResultSet executePrepared(PreparedStatement prepared);
 
+	ResultSet insertPrepared(PreparedStatement prepared);
+
+	ResultSet updatePrepared(PreparedStatement prepared);
+
+	ResultSet deletePrepared(PreparedStatement prepared);
+
 	default boolean executeQuery(String query, Object... obj) {
 		return executeQuery(String.format(query, obj));
 	}
