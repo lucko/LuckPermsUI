@@ -46,6 +46,10 @@ public interface IDatabaseManager {
 
 	ResultSet executePrepared(String query, Consumer<PreparedStatement> prepare);
 
+	PreparedStatement prepare(String query);
+
+	ResultSet executePrepared(PreparedStatement prepared);
+
 	default boolean executeQuery(String query, Object... obj) {
 		return executeQuery(String.format(query, obj));
 	}

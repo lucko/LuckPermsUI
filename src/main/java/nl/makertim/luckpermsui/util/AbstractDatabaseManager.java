@@ -75,13 +75,34 @@ public abstract class AbstractDatabaseManager implements IDatabaseManager, Runna
 	}
 
 	@Override
+	public PreparedStatement prepare(String query) {
+		try {
+			return connection.prepareStatement(query);
+		} catch (Exception ex) {
+			System.err.println(ex);
+			return null;
+		}
+	}
+
+	@Override
+	public ResultSet executePrepared(PreparedStatement prepared) {
+		try {
+			openIfNotClosed();
+			prepared.executeQuery();
+			return prepared.executeQuery();
+		} catch (Exception ex) {
+			System.err.println(ex.toString());
+			return null;
+		}
+	}
+
+	@Override
 	public ResultSet executePrepared(String query, Consumer<PreparedStatement> prepare) {
 		try {
 			openIfNotClosed();
 			PreparedStatement statement = connection.prepareStatement(query);
 			prepare.accept(statement);
-			statement.executeQuery();
-			return statement.executeQuery(query);
+			return executePrepared(statement);
 		} catch (Exception ex) {
 			System.err.println(ex.toString());
 			return null;
