@@ -3,6 +3,7 @@ package nl.makertim.luckpermsui.internal;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,6 +36,14 @@ public class Group {
 			}
 		}
 		return ret;
+	}
+
+	public String getJson() {
+		return perms.toString();
+	}
+
+	public void addPermission(String key) {
+		getPerms().add(key, new JsonPrimitive(true));
 	}
 
 	@Override
