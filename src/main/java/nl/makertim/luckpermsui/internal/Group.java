@@ -65,10 +65,14 @@ public class Group {
 	}
 
 	public void setPermission(Permission perm) {
+		removePermission(perm);
+		setPermission(perm.getKey(), perm.isActive());
+	}
+
+	public void removePermission(Permission perm) {
 		if (getPerms().has(perm.getKey())) {
 			getPerms().remove(perm.getKey());
 		}
-		setPermission(perm.getKey(), perm.isActive());
 	}
 
 	public void removePermission(String key) {

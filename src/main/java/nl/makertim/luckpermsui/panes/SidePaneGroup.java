@@ -5,24 +5,22 @@ import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import nl.makertim.luckpermsui.elements.LuckPermLabel;
 import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.elements.PermissionStringConverter;
 import nl.makertim.luckpermsui.elements.TexturedButton;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
 import nl.makertim.luckpermsui.internal.Group;
-import nl.makertim.luckpermsui.elements.LuckPermLabel;
 import nl.makertim.luckpermsui.internal.GroupManager;
 import nl.makertim.luckpermsui.internal.Permission;
 
@@ -30,6 +28,10 @@ public class SidePaneGroup extends VBox {
 
 	private ViewManager parent;
 	private Group group;
+	private ListView<Permission> permissionList;
+	TextField searchServer;
+	TextField searchWorld;
+	TextField searchNode;
 
 	public SidePaneGroup(ViewManager parent, Group group) {
 		super();
@@ -50,32 +52,33 @@ public class SidePaneGroup extends VBox {
 				String.format("Remove selected permission.", group.getName()));
 
 		HBox searchers = new HBox();
-		TextField searchServer = new LuckPermTextField();
+		searchServer = new LuckPermTextField();
 		searchServer.setPromptText("Search filter server.");
-		TextField searchWorld = new LuckPermTextField();
+		searchWorld = new LuckPermTextField();
 		searchWorld.setPromptText("Search filter world.");
-		TextField searchNode = new LuckPermTextField();
+		searchNode = new LuckPermTextField();
 		searchNode.setPromptText("Search filter node.");
 
-		ListView<Permission> permissionList = new ListView<>();
+		permissionList = new ListView<>();
 		permissionList.setCellFactory(lv -> {
 			TextFieldListCell<Permission> cell = new TextFieldListCell<>();
 			StringConverter<Permission> converter = new PermissionStringConverter(lv.getItems());
 			cell.setConverter(converter);
 			return cell;
 		});
-		fillPermissionList(permissionList, "", "", "");
+		fillPermissionList();
 		permissionList.setPrefWidth(250);
 		permissionList.setPrefHeight(687);
 
 		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onPermissionAdd());
+		changeButton.setOnMouseClicked(
+			(Consumer<MouseEvent>) click -> onPermissionChange(permissionList.getSelectionModel().getSelectedItem()));
+		removeButton.setOnMouseClicked(
+			(Consumer<MouseEvent>) click -> onPermissionRemove(permissionList.getSelectionModel().getSelectedItem()));
 
-		searchServer.textProperty().addListener(onChange -> fillPermissionList(permissionList, searchServer.getText(),
-			searchWorld.getText(), searchNode.getText()));
-		searchWorld.textProperty().addListener(onChange -> fillPermissionList(permissionList, searchServer.getText(),
-			searchWorld.getText(), searchNode.getText()));
-		searchNode.textProperty().addListener(onChange -> fillPermissionList(permissionList, searchServer.getText(),
-			searchWorld.getText(), searchNode.getText()));
+		searchServer.textProperty().addListener(onChange -> fillPermissionList());
+		searchWorld.textProperty().addListener(onChange -> fillPermissionList());
+		searchNode.textProperty().addListener(onChange -> fillPermissionList());
 
 		topRightCorner.getChildren().addAll(addButton, changeButton, removeButton);
 		topLine.setLeft(nameLabel);
@@ -97,11 +100,11 @@ public class SidePaneGroup extends VBox {
 		FormBase form = new FormPermissionAdd(parent, group);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
-				Object[] vaules = fr.getResult();
-				String node = (String) vaules[0];
-				String server = (String) vaules[1];
-				String world = (String) vaules[2];
-				boolean active = (boolean) vaules[3];
+				Object[] values = fr.getResult();
+				String node = (String) values[0];
+				String server = (String) values[1];
+				String world = (String) values[2];
+				boolean active = (boolean) values[3];
 				if (node.isEmpty()) {
 					return;
 				}
@@ -115,32 +118,87 @@ public class SidePaneGroup extends VBox {
 				Permission perm = new Permission(server, world, node, active);
 				group.setPermission(perm);
 				GroupManager.updatePermissions(group);
+				fillPermissionList();
 			}
 		});
 	}
 
-	private void fillPermissionList(ListView<Permission> permissionList, String serverFilter, String worldFilter, String nodeFilter) {
+	private void onPermissionChange(Permission permission) {
+		if (group == null || permission == null) {
+			return;
+		}
+		FormBase form = new FormPermissionChange(parent, group, permission);
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.OK) {
+				Object[] values = fr.getResult();
+				String node = (String) values[0];
+				String server = (String) values[1];
+				String world = (String) values[2];
+				boolean active = (boolean) values[3];
+				if (node.isEmpty()) {
+					return;
+				}
+				if (server == null || server.isEmpty()) {
+					server = null;
+					world = null;
+				}
+				if (world == null || world.isEmpty()) {
+					world = null;
+				}
+				group.removePermission(permission);
+				Permission perm = new Permission(server, world, node, active);
+				group.setPermission(perm);
+				GroupManager.updatePermissions(group);
+				fillPermissionList();
+			}
+		});
+	}
+
+	private void onPermissionRemove(Permission permission) {
+		if (group == null) {
+			return;
+		}
+		if (permission == null) {
+			return;
+		}
+		FormBase form = new FormPermissionRemove(parent, group, permission);
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.YES) {
+				group.removePermission(permission);
+				GroupManager.updatePermissions(group);
+				fillPermissionList();
+			}
+		});
+
+	}
+
+	private void fillPermissionList() {
 		permissionList.getItems().clear();
+
+		String searchServer = this.searchServer.getText();
+		String searchWorld = this.searchWorld.getText();
+		String searchNode = this.searchNode.getText();
+
 		Pattern serverPattern = null;
 		Pattern worldPattern = null;
 		Pattern nodePattern = null;
 		try {
-			serverPattern = Pattern.compile(serverFilter);
-			worldPattern = Pattern.compile(worldFilter);
-			nodePattern = Pattern.compile(nodeFilter);
+			serverPattern = Pattern.compile(searchServer);
+			worldPattern = Pattern.compile(searchWorld);
+			nodePattern = Pattern.compile(searchNode);
 		} catch (Exception e) {
 		}
 		for (Permission permission : group.getPermissions()) {
-			if (!nodeFilter.isEmpty() && (permission.getNode() == null || !permission.getNode().contains(nodeFilter)
+			if (!searchNode.isEmpty() && (permission.getNode() == null || !permission.getNode().contains(searchNode)
 					&& (nodePattern != null && !nodePattern.matcher(permission.getNode()).find()))) {
 				continue;
 			}
-			if (!worldFilter.isEmpty() && (permission.getWorld() == null || !permission.getWorld().contains(worldFilter)
+			if (!searchWorld.isEmpty() && (permission.getWorld() == null || !permission.getWorld().contains(searchWorld)
 					&& (worldPattern != null && !worldPattern.matcher(permission.getWorld()).find()))) {
 				continue;
 			}
-			if (!serverFilter.isEmpty()
-					&& (permission.getServer() == null || !permission.getServer().contains(serverFilter)
+			if (!searchServer.isEmpty()
+					&& (permission.getServer() == null || !permission.getServer().contains(searchServer)
 							&& (serverPattern != null && !serverPattern.matcher(permission.getServer()).find()))) {
 				continue;
 			}
