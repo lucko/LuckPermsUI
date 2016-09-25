@@ -9,6 +9,7 @@ import nl.makertim.luckpermsui.panes.ViewLogin;
 public class MainWindow extends Application {
 
 	private static MainWindow view;
+	public static final Font FONT = Font.loadFont(Main.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
 
 	private Stage primaryStage;
 
@@ -19,7 +20,6 @@ public class MainWindow extends Application {
 		Scene login = new Scene(new ViewLogin());
 		primaryStage.setTitle("LuckPerms Unofficial User Interface\u2122");
 		primaryStage.setScene(login);
-		Font.loadFont("assets/Ubuntu.ttf", 10);
 		primaryStage.show();
 	}
 

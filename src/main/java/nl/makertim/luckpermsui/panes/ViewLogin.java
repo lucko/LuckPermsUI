@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import nl.makertim.luckpermsui.DatabaseType;
 import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.MainWindow;
+import nl.makertim.luckpermsui.elements.LuckPermLabel;
+import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.util.MySQLDatabaseManager;
 
 public class ViewLogin extends StackPane {
@@ -23,36 +25,36 @@ public class ViewLogin extends StackPane {
 		grid.setPadding(new Insets(10, 10, 10, 10));
 
 		int row = 0;
-		Label databaseTypeLabel = new Label("Database Type");
+		Label databaseTypeLabel = new LuckPermLabel("Database Type");
 		ComboBox<DatabaseType> databaseTypeField = new ComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
 		GridPane.setConstraints(databaseTypeLabel, 1, row);
 		GridPane.setConstraints(databaseTypeField, 2, row++);
 
-		Label databaseHostLabel = new Label("Host");
-		TextField databaseHostField = new TextField();
+		Label databaseHostLabel = new LuckPermLabel("Host");
+		TextField databaseHostField = new LuckPermTextField();
 		databaseHostField.setPromptText("example.com");
 		GridPane.setConstraints(databaseHostLabel, 1, row);
 		GridPane.setConstraints(databaseHostField, 2, row++);
 
-		Label databasePortLabel = new Label("Port");
-		TextField databasePortField = new TextField();
+		Label databasePortLabel = new LuckPermLabel("Port");
+		TextField databasePortField = new LuckPermTextField();
 		databasePortField.setPromptText("3306");
 		GridPane.setConstraints(databasePortLabel, 1, row);
 		GridPane.setConstraints(databasePortField, 2, row++);
 
-		Label databaseLabel = new Label("Database");
-		TextField databaseField = new TextField();
+		Label databaseLabel = new LuckPermLabel("Database");
+		TextField databaseField = new LuckPermTextField();
 		GridPane.setConstraints(databaseLabel, 1, row);
 		GridPane.setConstraints(databaseField, 2, row++);
 
-		Label usernameLabel = new Label("Username");
-		TextField usernameField = new TextField();
+		Label usernameLabel = new LuckPermLabel("Username");
+		TextField usernameField = new LuckPermTextField();
 		usernameField.setPromptText("My Awesome Username");
 		GridPane.setConstraints(usernameLabel, 1, row);
 		GridPane.setConstraints(usernameField, 2, row++);
 
-		Label passwordLabel = new Label("Password");
+		Label passwordLabel = new LuckPermLabel("Password");
 		TextField passwordField = new PasswordField();
 		passwordField.setPromptText("My Secret Password");
 		GridPane.setConstraints(passwordLabel, 1, row);
@@ -104,6 +106,8 @@ public class ViewLogin extends StackPane {
 			Main.manager = new MySQLDatabaseManager("localhost", 3306, "stream", "", "test");
 			break;
 		case H2:
+			Main.manager = new MySQLDatabaseManager("magikopimine.nl", 3306, "iMine", "ffi8DFL9SnD7",
+					"iMine_LuckPerms");
 			break;
 		case FLATFILE:
 			break;

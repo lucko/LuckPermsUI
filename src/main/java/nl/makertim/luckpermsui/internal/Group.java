@@ -27,12 +27,31 @@ public class Group {
 		return perms;
 	}
 
-	public Collection<String> getPermissions() {
-		Collection<String> ret = new HashSet<>();
+	public Collection<Permission> getPermissions() {
+		Collection<Permission> ret = new HashSet<>();
 		for (Map.Entry<String, JsonElement> elementEntry : getPerms().entrySet()) {
 			if (elementEntry.getValue().isJsonPrimitive() && elementEntry.getValue().getAsBoolean()) {
 				String permissionName = elementEntry.getKey();
-				ret.add(permissionName);
+				if (permissionName.isEmpty()) {
+					continue;
+				}
+				Permission permission;
+				if (permissionName.contains("/")) {
+					String[] permissionSplit = permissionName.split("\\/", 2);
+					String serverWorld = permissionSplit[0];
+					String node = permissionSplit[1];
+					if (serverWorld.contains("-")) {
+						String[] serverWorldSplit = serverWorld.split("-", 2);
+						String server = serverWorldSplit[0];
+						String world = serverWorldSplit[1];
+						permission = new Permission(server, world, node, elementEntry.getValue());
+					} else {
+						permission = new Permission(serverWorld, node, elementEntry.getValue());
+					}
+				} else {
+					permission = new Permission(permissionName, elementEntry.getValue());
+				}
+				ret.add(permission);
 			}
 		}
 		return ret;
@@ -42,8 +61,12 @@ public class Group {
 		return perms.toString();
 	}
 
-	public void addPermission(String key) {
-		getPerms().add(key, new JsonPrimitive(true));
+	public void setPermission(String key, boolean b) {
+		getPerms().add(key, new JsonPrimitive(b));
+	}
+
+	public void removePermission(String key) {
+		getPerms().remove(key);
 	}
 
 	@Override

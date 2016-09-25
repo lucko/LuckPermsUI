@@ -1,5 +1,6 @@
 package nl.makertim.luckpermsui.panes;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 public class ViewManager extends StackPane {
 
 	BorderPane mainLayer;
+	VBox menu;
 	Pane mainView;
 	Pane sideView;
 	StackPane overlay;
@@ -22,14 +24,17 @@ public class ViewManager extends StackPane {
 		setup();
 		setWidth(600);
 		getChildren().addAll(mainLayer, overlay);
+		widthProperty().addListener(resize -> onResize());
+		heightProperty().addListener(resize -> onResize());
+		Platform.runLater(() -> onResize());
 	}
 
 	private void setup() {
-		VBox menu = new VBox(10);
+		menu = new VBox(10);
 		menu.setPadding(new Insets(0, 4, 0, 0));
 		menu.setMinWidth(90);
-		mainView = new AnchorPane();
-		sideView = new AnchorPane();
+		mainView = new StackPane();
+		sideView = new StackPane();
 		sideView.setMinWidth(100);
 
 		Button groupButton = new Button("Groups");
@@ -42,6 +47,13 @@ public class ViewManager extends StackPane {
 		mainLayer.setLeft(menu);
 		mainLayer.setCenter(mainView);
 		mainLayer.setRight(sideView);
+	}
+
+	private void onResize() {
+		mainView.setMinWidth(((getWidth() / 5) * 3) - menu.getWidth() / 2);
+		mainView.setMaxWidth(((getWidth() / 5) * 3) - menu.getWidth() / 2);
+		sideView.setMinWidth(((getWidth() / 5) * 2) - menu.getWidth() / 2);
+		sideView.setMaxWidth(((getWidth() / 5) * 2) - menu.getWidth() / 2);
 	}
 
 	public void setMainView(Pane pane) {

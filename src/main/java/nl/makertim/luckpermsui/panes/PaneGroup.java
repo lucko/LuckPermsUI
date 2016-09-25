@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nl.makertim.luckpermsui.Main;
+import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.elements.TexturedButton;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
@@ -30,19 +31,16 @@ public class PaneGroup extends VBox {
 	}
 
 	private void setup() {
-		// setPrefWidth(Short.MAX_VALUE);
-
 		HBox topLine = new HBox();
-		search = new TextField();
+		search = new LuckPermTextField();
 		search.setPromptText("Search group by name.");
-		search.setMinWidth(300);
-		search.setPrefWidth(540);
+		search.setPrefWidth(Short.MAX_VALUE);
 		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24);
 		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24);
 
 		groups = new ListView<>();
-		groups.setPrefWidth(680);
 		groups.setPrefHeight(704);
+		groups.setPrefWidth(Short.MAX_VALUE);
 		fillGroups();
 
 		search.textProperty().addListener(onChange -> fillGroups());

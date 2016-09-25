@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import nl.makertim.luckpermsui.panes.ViewManager;
+import nl.makertim.luckpermsui.elements.LuckPermLabel;
 import nl.makertim.luckpermsui.util.StringUtil;
 
 public class FormBase extends BorderPane {
@@ -30,14 +31,14 @@ public class FormBase extends BorderPane {
 		content.setHgap(8);
 		content.setAlignment(Pos.CENTER_LEFT);
 
-		Label label = new Label(name);
+		Label label = new LuckPermLabel(name);
 		GridPane.setConstraints(label, 0, 0);
 		content.getChildren().add(label);
 
 		controls = new Control[items.size()];
 		for (int i = 0; i < items.size(); i++) {
 			FormItem item = items.get(i);
-			Label controlName = new Label(item.getName());
+			Label controlName = new LuckPermLabel(item.getName());
 			controls[i] = item.getItem();
 			GridPane.setConstraints(controlName, 0, i + 1);
 			GridPane.setConstraints(controls[i], 1, i + 1);
