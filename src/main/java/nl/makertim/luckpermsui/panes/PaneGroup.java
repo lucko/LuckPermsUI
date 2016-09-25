@@ -2,6 +2,7 @@ package nl.makertim.luckpermsui.panes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javafx.application.Platform;
@@ -96,20 +97,8 @@ public class PaneGroup extends VBox {
 		groups.getItems().clear();
 		parent.setSideView(null);
 		String saveFilter = Main.manager.prepareString(search.getText());
-		new Thread(() -> {
-			ResultSet rs = Main.manager
-					.selectQuery("SELECT * FROM lp_groups WHERE name LIKE '%" + saveFilter + "%' ORDER BY name;");
-			try {
-				while (rs.next()) {
-					String name = rs.getString("name");
-					String perms = rs.getString("perms");
-					Platform.runLater(() -> groups.getItems().add(new Group(name, perms)));
-				}
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}).start();
+		List<Group> groups = GroupManager.getGroups(saveFilter);
+		this.groups.getItems().addAll(groups);
 	}
 
 }
