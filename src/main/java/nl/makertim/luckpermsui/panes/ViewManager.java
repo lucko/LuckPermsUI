@@ -80,7 +80,6 @@ public class ViewManager extends StackPane {
 			HBox hCenter = new HBox(vCenter);
 			vCenter.setAlignment(Pos.CENTER);
 			hCenter.setAlignment(Pos.CENTER);
-			System.out.println(hCenter);
 			overlay.getChildren().addAll(fade, hCenter);
 		}
 	}

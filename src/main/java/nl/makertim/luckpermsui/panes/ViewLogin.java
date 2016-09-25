@@ -106,8 +106,6 @@ public class ViewLogin extends StackPane {
 			Main.manager = new MySQLDatabaseManager("localhost", 3306, "stream", "", "test");
 			break;
 		case H2:
-			Main.manager = new MySQLDatabaseManager("magikopimine.nl", 3306, "iMine", "ffi8DFL9SnD7",
-					"iMine_LuckPerms");
 			break;
 		case FLATFILE:
 			break;

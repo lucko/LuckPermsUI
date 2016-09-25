@@ -26,8 +26,8 @@ public class PaneGroup extends VBox {
 	private ListView<Group> groups;
 
 	public PaneGroup(ViewManager viewManager) {
-		setup();
 		parent = viewManager;
+		setup();
 	}
 
 	private void setup() {
@@ -35,8 +35,9 @@ public class PaneGroup extends VBox {
 		search = new LuckPermTextField();
 		search.setPromptText("Search group by name.");
 		search.setPrefWidth(Short.MAX_VALUE);
-		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24);
-		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24);
+		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24, "Create a new group.");
+		TexturedButton refreshButton = new TexturedButton("assets/images/refresh.png", 24, "Remove selected group.");
+		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24, "Remove selected group.");
 
 		groups = new ListView<>();
 		groups.setPrefHeight(704);
@@ -47,14 +48,15 @@ public class PaneGroup extends VBox {
 		groups.getSelectionModel().getSelectedItems().addListener((InvalidationListener) change -> {
 			Group group = groups.getSelectionModel().getSelectedItem();
 			if (group != null) {
-				parent.setSideView(new SidePaneGroup(group));
+				parent.setSideView(new SidePaneGroup(parent, group));
 			}
 		});
 		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onNewGroup(search.getText()));
+		refreshButton.setOnMouseClicked((Consumer<MouseEvent>) click -> fillGroups());
 		removeButton.setOnMouseClicked(
 			(Consumer<MouseEvent>) click -> onRemoveGroup(groups.getSelectionModel().getSelectedItem()));
 
-		topLine.getChildren().addAll(search, addButton, removeButton);
+		topLine.getChildren().addAll(search, addButton, refreshButton, removeButton);
 		getChildren().addAll(topLine, groups);
 	}
 
@@ -92,6 +94,7 @@ public class PaneGroup extends VBox {
 
 	private void fillGroups() {
 		groups.getItems().clear();
+		parent.setSideView(null);
 		String saveFilter = Main.manager.prepareString(search.getText());
 		new Thread(() -> {
 			ResultSet rs = Main.manager

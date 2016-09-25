@@ -85,6 +85,8 @@ public class FormBase extends BorderPane {
 				ret[i] = ((Spinner) control).getValue();
 			} else if (control instanceof TextInputControl) {
 				ret[i] = ((TextInputControl) control).getText();
+			} else if (control instanceof CheckBox) {
+				ret[i] = ((CheckBox) control).isSelected();
 			} else {
 				ret[i] = control;
 			}

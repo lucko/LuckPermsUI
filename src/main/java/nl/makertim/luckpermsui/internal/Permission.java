@@ -1,27 +1,25 @@
 package nl.makertim.luckpermsui.internal;
 
-import com.google.gson.JsonElement;
-
 public class Permission {
 
-	private JsonElement origin;
 	private String server;
 	private String world;
 	private String node;
+	private boolean active;
 
-	public Permission(String node, JsonElement jsonElement) {
-		this(null, null, node, jsonElement);
+	public Permission(String node, boolean active) {
+		this(null, null, node, active);
 	}
 
-	public Permission(String server, String node, JsonElement jsonElement) {
-		this(server, null, node, jsonElement);
+	public Permission(String server, String node, boolean active) {
+		this(server, null, node, active);
 	}
 
-	public Permission(String server, String world, String node, JsonElement jsonElement) {
+	public Permission(String server, String world, String node, boolean active) {
 		this.server = server;
 		this.world = world;
 		this.node = node;
-		this.origin = jsonElement;
+		this.active = active;
 	}
 
 	public boolean hasServer() {
@@ -48,13 +46,24 @@ public class Permission {
 		return node;
 	}
 
-	public JsonElement getOrigin() {
-		return origin;
+	public boolean isActive() {
+		return active;
+	}
+
+	public String getKey() {
+		if (hasServer()) {
+			if (hasWorld()) {
+				return String.format("%s-%s/%s", getServer(), getWorld(), getNode());
+			} else {
+				return String.format("%s/%s", getServer(), getNode());
+			}
+		}
+		return String.format("%s", getNode());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%s-%s/%s", getServer(), getWorld(), getNode());
+		return getKey();
 	}
 
 	@Override
