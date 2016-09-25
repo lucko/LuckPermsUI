@@ -2,8 +2,9 @@ package nl.makertim.luckpermsui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import nl.makertim.luckpermsui.panes.LoginPane;
+import nl.makertim.luckpermsui.panes.ViewLogin;
 
 public class MainWindow extends Application {
 
@@ -15,10 +16,10 @@ public class MainWindow extends Application {
 		MainWindow.view = this;
 		this.primaryStage = primaryStage;
 
-		Scene login = new Scene(new LoginPane());
+		Scene login = new Scene(new ViewLogin());
 		primaryStage.setTitle("LuckPerms Unofficial User Interface\u2122");
 		primaryStage.setScene(login);
-
+		Font.loadFont("assets/Ubuntu.ttf", 10);
 		primaryStage.show();
 	}
 

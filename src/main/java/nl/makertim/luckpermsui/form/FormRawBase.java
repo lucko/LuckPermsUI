@@ -1,12 +1,12 @@
-package nl.makertim.luckpermsui.popup;
+package nl.makertim.luckpermsui.form;
 
 import java.util.List;
 
-import javafx.stage.Window;
+import nl.makertim.luckpermsui.panes.ViewManager;
 
-public class RawFormBase extends FormBase {
+public class FormRawBase extends FormBase {
 
-	public RawFormBase(Window parent, String name, List<FormItem> items, List<FormResultType> buttons) {
+	public FormRawBase(ViewManager parent, String name, List<FormItem> items, List<FormResultType> buttons) {
 		super(parent, name, items, buttons);
 	}
 

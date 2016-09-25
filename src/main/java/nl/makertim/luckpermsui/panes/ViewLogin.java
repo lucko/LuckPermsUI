@@ -12,9 +12,9 @@ import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.MainWindow;
 import nl.makertim.luckpermsui.util.MySQLDatabaseManager;
 
-public class LoginPane extends StackPane {
+public class ViewLogin extends StackPane {
 
-	public LoginPane() {
+	public ViewLogin() {
 		setup();
 	}
 
@@ -115,8 +115,8 @@ public class LoginPane extends StackPane {
 				return;
 			}
 			Stage stage = MainWindow.getView().getPrimaryStage();
-			stage.setScene(new Scene(new MultiView(), 1024, 768));
-			stage.setMinWidth(840);
+			stage.setScene(new Scene(new ViewManager(), 1024, 768));
+			stage.setMinWidth(1000);
 			stage.setMinHeight(768);
 			stage.setMaxHeight(768);
 		} catch (NullPointerException ex) {

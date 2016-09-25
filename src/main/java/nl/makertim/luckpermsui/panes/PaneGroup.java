@@ -1,54 +1,57 @@
 package nl.makertim.luckpermsui.panes;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.function.Consumer;
+
 import javafx.application.Platform;
-import javafx.scene.Scene;
+import javafx.beans.InvalidationListener;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.elements.TexturedButton;
+import nl.makertim.luckpermsui.form.FormBase;
+import nl.makertim.luckpermsui.form.FormResultType;
 import nl.makertim.luckpermsui.internal.Group;
 import nl.makertim.luckpermsui.internal.GroupManager;
-import nl.makertim.luckpermsui.popup.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.function.Consumer;
+public class PaneGroup extends VBox {
 
-public class GroupView extends VBox {
-
-	private MultiView parent;
+	private ViewManager parent;
 	private TextField search;
 	private ListView<Group> groups;
 
-	public GroupView(MultiView multiView) {
+	public PaneGroup(ViewManager viewManager) {
 		setup();
-		parent = multiView;
+		parent = viewManager;
 	}
 
 	private void setup() {
-		setPrefWidth(500);
+		// setPrefWidth(Short.MAX_VALUE);
 
 		HBox topLine = new HBox();
 		search = new TextField();
 		search.setPromptText("Search group by name.");
-		search.setPrefWidth(340);
+		search.setMinWidth(300);
+		search.setPrefWidth(540);
 		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24);
 		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24);
 
 		groups = new ListView<>();
 		groups.setPrefWidth(680);
-		groups.setPrefHeight(744);
+		groups.setPrefHeight(704);
 		fillGroups();
 
 		search.textProperty().addListener(onChange -> fillGroups());
-		groups.setOnMouseClicked(
-			click -> parent.setSideView(new GroupSideView(groups.getSelectionModel().getSelectedItem())));
+		groups.getSelectionModel().getSelectedItems().addListener((InvalidationListener) change -> {
+			Group group = groups.getSelectionModel().getSelectedItem();
+			if (group != null) {
+				parent.setSideView(new SidePaneGroup(group));
+			}
+		});
 		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onNewGroup(search.getText()));
 		removeButton.setOnMouseClicked(
 			(Consumer<MouseEvent>) click -> onRemoveGroup(groups.getSelectionModel().getSelectedItem()));
@@ -61,35 +64,32 @@ public class GroupView extends VBox {
 		if (group == null) {
 			return;
 		}
-		FormBase form = new FormBase(getScene().getWindow(), "DELETE GROUP",
-				Arrays.asList(new FormItem("Confirm with: '" + group.getName() + "'", new TextField())),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
-		FormResult fr = form.showForm();
-		if (fr.getType() == FormResultType.OK) {
-			Object[] result = fr.getResult();
-			String confirm = (String) result[0];
-			if (confirm.equals(group.getName())) {
-				GroupManager.removeGroup(group);
-				fillGroups();
-			} else {
-				onRemoveGroup(group);
+		FormBase form = new FormGroupDelete(parent, group);
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.OK) {
+				Object[] result = fr.getResult();
+				if (result[0].equals(group.getName())) {
+					GroupManager.removeGroup(group);
+					fillGroups();
+					parent.setSideView(null);
+				} else {
+					onRemoveGroup(group);
+				}
 			}
-		}
-
+		});
 	}
 
 	private void onNewGroup(String preFilled) {
-		FormBase form = new FormBase(getScene().getWindow(), "New Group",
-				Arrays.asList(new FormItem("Name", new TextField(preFilled))),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
-		FormResult fr = form.showForm();
-		if (fr.getType() == FormResultType.OK) {
-			Object[] result = fr.getResult();
-			String name = (String) result[0];
-			Group group = GroupManager.createGroup(name);
-			GroupManager.addGroup(group);
-			fillGroups();
-		}
+		FormBase form = new FormGroupNew(parent, preFilled);
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.OK) {
+				Object[] result = fr.getResult();
+				String name = (String) result[0];
+				Group group = GroupManager.createGroup(name);
+				GroupManager.addGroup(group);
+				fillGroups();
+			}
+		});
 	}
 
 	private void fillGroups() {

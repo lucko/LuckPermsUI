@@ -1,4 +1,4 @@
-package nl.makertim.luckpermsui.popup;
+package nl.makertim.luckpermsui.form;
 
 import javafx.scene.control.Control;
 

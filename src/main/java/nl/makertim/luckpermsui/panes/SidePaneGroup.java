@@ -12,11 +12,11 @@ import nl.makertim.luckpermsui.internal.Group;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class GroupSideView extends VBox {
+public class SidePaneGroup extends VBox {
 
 	private Group group;
 
-	public GroupSideView(Group group) {
+	public SidePaneGroup(Group group) {
 		super();
 		this.group = group;
 		setup();
@@ -31,7 +31,7 @@ public class GroupSideView extends VBox {
 		ListView<String> permissionList = new ListView<>();
 		fillPermissionList(permissionList, "");
 		permissionList.setPrefWidth(250);
-		permissionList.setPrefHeight(727);
+		permissionList.setPrefHeight(687);
 
 		search.textProperty().addListener(onChange -> fillPermissionList(permissionList, search.getText()));
 

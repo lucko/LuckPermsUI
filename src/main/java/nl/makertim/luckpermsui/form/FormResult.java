@@ -1,4 +1,4 @@
-package nl.makertim.luckpermsui.popup;
+package nl.makertim.luckpermsui.form;
 
 public class FormResult {
 
