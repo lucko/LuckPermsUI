@@ -5,7 +5,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 public class ViewManager extends StackPane {
@@ -41,7 +44,7 @@ public class ViewManager extends StackPane {
 		Button userButton = new Button("User manager");
 
 		groupButton.setOnAction(action -> setMainView(new PaneGroup(this)));
-		// userButton.setOnAction(action -> setMainView(new UserView(this)));
+		userButton.setOnAction(action -> setMainView(new PaneUser(this)));
 
 		menu.getChildren().addAll(groupButton, userButton);
 		mainLayer.setLeft(menu);
@@ -58,6 +61,7 @@ public class ViewManager extends StackPane {
 
 	public void setMainView(Pane pane) {
 		mainView.getChildren().clear();
+		setSideView(null);
 		if (pane != null) {
 			mainView.getChildren().add(pane);
 		}

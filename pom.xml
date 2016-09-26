@@ -99,25 +99,11 @@
             <version>3.3.0</version>
             <scope>compile</scope>
         </dependency>
-        <!-- slf4j library -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- gson -->
+        <!-- GSon -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
