@@ -1,13 +1,13 @@
 package nl.makertim.luckpermsui.internal;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
 
 public class Group {
 

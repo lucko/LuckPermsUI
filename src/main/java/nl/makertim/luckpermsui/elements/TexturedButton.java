@@ -1,13 +1,13 @@
 package nl.makertim.luckpermsui.elements;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Consumer;
+
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import nl.makertim.luckpermsui.MainWindow;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Consumer;
 
 public class TexturedButton extends ImageView {
 

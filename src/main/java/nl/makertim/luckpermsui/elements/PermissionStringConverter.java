@@ -2,7 +2,6 @@ package nl.makertim.luckpermsui.elements;
 
 import java.util.Collection;
 
-import javafx.util.StringConverter;
 import nl.makertim.luckpermsui.internal.Permission;
 
 public class PermissionStringConverter extends ObjectStringConverter<Permission> {

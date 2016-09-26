@@ -10,6 +10,7 @@ public class MainWindow extends Application {
 
 	private static MainWindow view;
 	public static final Font FONT = Font.loadFont(Main.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
+	public static final Font MONOSPACE = Font.loadFont(Main.class.getResourceAsStream("/assets/Letter Gothic.ttf"), 12);
 
 	private Stage primaryStage;
 

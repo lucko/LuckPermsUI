@@ -10,8 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import nl.makertim.luckpermsui.panes.ViewManager;
 import nl.makertim.luckpermsui.elements.LuckPermLabel;
+import nl.makertim.luckpermsui.panes.ViewManager;
 import nl.makertim.luckpermsui.util.StringUtil;
 
 public class FormBase extends BorderPane {

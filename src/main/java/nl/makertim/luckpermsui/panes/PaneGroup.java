@@ -1,18 +1,14 @@
 package nl.makertim.luckpermsui.panes;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import nl.makertim.luckpermsui.Main;
 import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.elements.TexturedButton;
 import nl.makertim.luckpermsui.form.FormBase;
@@ -96,8 +92,7 @@ public class PaneGroup extends VBox {
 	private void fillGroups() {
 		groups.getItems().clear();
 		parent.setSideView(null);
-		String saveFilter = Main.manager.prepareString(search.getText());
-		List<Group> groups = GroupManager.getGroups(saveFilter);
+		List<Group> groups = GroupManager.getGroups(search.getText());
 		this.groups.getItems().addAll(groups);
 	}
 
