@@ -1,11 +1,16 @@
 package nl.makertim.luckpermsui.panes;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import javafx.beans.InvalidationListener;
-import javafx.scene.control.ListView;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,7 +25,7 @@ public class PaneGroup extends VBox {
 
 	private ViewManager parent;
 	private TextField search;
-	private ListView<Group> groups;
+	private TableView<Group> groups;
 
 	public PaneGroup(ViewManager viewManager) {
 		parent = viewManager;
@@ -36,9 +41,7 @@ public class PaneGroup extends VBox {
 		TexturedButton refreshButton = new TexturedButton("assets/images/refresh.png", 24, "Remove selected group.");
 		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24, "Remove selected group.");
 
-		groups = new ListView<>();
-		groups.setPrefHeight(704);
-		groups.setPrefWidth(Short.MAX_VALUE);
+		setupTableView();
 		fillGroups();
 
 		search.textProperty().addListener(onChange -> fillGroups());
@@ -87,6 +90,22 @@ public class PaneGroup extends VBox {
 				fillGroups();
 			}
 		});
+	}
+
+	private void setupTableView() {
+		groups = new TableView<>();
+		groups.setPrefHeight(704);
+
+		TableColumn name = new TableColumn("Name");
+		name.setCellValueFactory(new PropertyValueFactory<Group, UUID>("name"));
+		TableColumn count = new TableColumn("Users in group");
+		count.setCellValueFactory(cvf -> {
+			TableColumn.CellDataFeatures cdf = (TableColumn.CellDataFeatures) cvf;
+			ObservableValue ret = new SimpleIntegerProperty(GroupManager.countUsersInGroup((Group) cdf.getValue()));
+			return ret;
+		});
+
+		groups.getColumns().addAll(name, count);
 	}
 
 	private void fillGroups() {

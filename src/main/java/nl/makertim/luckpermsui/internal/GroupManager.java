@@ -53,6 +53,20 @@ public class GroupManager {
 		}
 	}
 
+	public static int countUsersInGroup(Group group) {
+		String groupName = Main.manager.prepareString(group.getName());
+		ResultSet rs = Main.manager.selectQuery("SELECT count(*) as 'count' FROM lp_users WHERE primary_group = '"
+				+ groupName + "' OR perms LIKE '%group." + groupName + "\\\":%';");
+		try {
+			if (rs.next()) {
+				return rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	public static Group createGroup(String name) {
 		return new Group(name, "{}");
 	}

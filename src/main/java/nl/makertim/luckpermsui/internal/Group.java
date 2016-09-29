@@ -2,7 +2,9 @@ package nl.makertim.luckpermsui.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,12 +13,34 @@ import com.google.gson.JsonPrimitive;
 
 public class Group {
 
-	private String name;
-	private JsonObject perms;
+	private final String name;
+	private final JsonObject perms;
+	private final String[] inherit;
+	private final String prefix;
 
 	public Group(String name, String perms) {
 		this.name = name;
 		this.perms = new JsonParser().parse(perms).getAsJsonObject();
+		List<String> inheritList = this.perms.entrySet().stream()
+				.filter(permission -> permission.getKey().startsWith("group."))
+				.map(permission -> permission.getKey().replaceAll("group\\.", "")).collect(Collectors.toList());
+		inherit = inheritList.toArray(new String[inheritList.size()]);
+		List<String> prefixes = this.perms.entrySet().stream()
+				.filter(permission -> permission.getKey().startsWith("prefix."))
+				.map(permission -> permission.getKey().replaceAll("prefix.", "")).collect(Collectors.toList());
+		prefixes.sort((String perm1, String perm2) -> {
+			perm1 = perm1.substring(0, perm1.indexOf("."));
+			perm2 = perm2.substring(0, perm2.indexOf("."));
+			int perm1Value = Integer.parseInt(perm1);
+			int perm2Value = Integer.parseInt(perm2);
+			return Integer.compare(perm2Value, perm1Value);
+		});
+		if (prefixes.size() > 0) {
+			String prefix = prefixes.get(0);
+			this.prefix = prefix.substring(prefix.indexOf(".") + 1);
+		} else {
+			this.prefix = "";
+		}
 	}
 
 	public String getName() {
@@ -25,6 +49,14 @@ public class Group {
 
 	public JsonObject getPerms() {
 		return perms;
+	}
+
+	public String[] getInherit() {
+		return inherit;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 
 	public Collection<Permission> getPermissions() {
@@ -50,6 +82,9 @@ public class Group {
 				}
 			} else {
 				permission = new Permission(permissionName, active);
+			}
+			if (permission.getKey().startsWith("group.") || permission.getKey().startsWith("prefix.")) {
+				continue;
 			}
 			ret.add(permission);
 		}
