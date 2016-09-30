@@ -23,6 +23,7 @@ import nl.makertim.luckpermsui.internal.Group;
 import nl.makertim.luckpermsui.internal.GroupManager;
 import nl.makertim.luckpermsui.internal.Permission;
 import nl.makertim.luckpermsui.internal.User;
+import nl.makertim.luckpermsui.util.ColoredLine;
 
 public class SidePaneGroup extends VBox {
 
@@ -62,7 +63,7 @@ public class SidePaneGroup extends VBox {
 		VBox groupInfo = new VBox(1);
 		groupInfo.setPadding(new Insets(3, 0, 3, 3));
 		if (!group.getPrefix().isEmpty()) {
-			groupInfo.getChildren().add(new LuckPermLabel("Prefix = " + group.getPrefix()));
+			groupInfo.getChildren().add(new ColoredLine("Prefix = " + group.getPrefix()));
 		}
 		if (group.getInherit().length > 0) {
 			groupInfo.getChildren().add(new LuckPermLabel("Inherits from:"));
@@ -87,7 +88,7 @@ public class SidePaneGroup extends VBox {
 		topLine.setLeft(nameLabel);
 		topLine.setRight(topRightCorner);
 		searchers.getChildren().addAll(searchServer, searchWorld, searchNode);
-		getChildren().addAll(topLine, searchers, groupInfo, permissionList);
+		getChildren().addAll(topLine, groupInfo, searchers, permissionList);
 
 		Platform.runLater(() -> {
 			searchServer.setPrefWidth(Short.MAX_VALUE);
