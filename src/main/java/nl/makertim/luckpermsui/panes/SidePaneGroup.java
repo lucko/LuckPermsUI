@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
+import nl.makertim.luckpermsui.MainWindow;
 import nl.makertim.luckpermsui.elements.*;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
@@ -63,7 +64,9 @@ public class SidePaneGroup extends VBox {
 		VBox groupInfo = new VBox(1);
 		groupInfo.setPadding(new Insets(3, 0, 3, 3));
 		if (!group.getPrefix().isEmpty()) {
-			groupInfo.getChildren().add(new ColoredLine("Prefix = " + group.getPrefix()));
+			ColoredLine prefixLine = new ColoredLine("Prefix = " + group.getPrefix());
+			prefixLine.setFont(MainWindow.FONT);
+			groupInfo.getChildren().add(prefixLine);
 		}
 		if (group.getInherit().length > 0) {
 			groupInfo.getChildren().add(new LuckPermLabel("Inherits from:"));

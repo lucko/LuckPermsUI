@@ -1,14 +1,18 @@
 package nl.makertim.luckpermsui.util;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class ColoredLine extends HBox {
 
 	private final StringProperty lineText;
+	private final ObjectProperty<Font> font;
 
 	private final char split;
 
@@ -17,6 +21,8 @@ public class ColoredLine extends HBox {
 		lineText = new SimpleStringProperty();
 		lineText.addListener(change -> setupLine());
 		lineText.setValue(line);
+		font = new SimpleObjectProperty<>();
+		font.addListener(change -> setupLine());
 	}
 
 	public ColoredLine(String line) {
@@ -57,6 +63,9 @@ public class ColoredLine extends HBox {
 	private void addPart(String str, Color color) {
 		Label lbl = new Label(str);
 		lbl.setTextFill(color);
+		if (font != null) {
+			lbl.setFont(font.get());
+		}
 		getChildren().add(lbl);
 	}
 
@@ -77,5 +86,21 @@ public class ColoredLine extends HBox {
 
 	public String getLineText() {
 		return lineText.get();
+	}
+
+	public void setLineText(String lineText) {
+		this.lineText.set(lineText);
+	}
+
+	public ObjectProperty<Font> fontProperty() {
+		return font;
+	}
+
+	public Font getFont() {
+		return font.get();
+	}
+
+	public void setFont(Font font) {
+		this.font.set(font);
 	}
 }
