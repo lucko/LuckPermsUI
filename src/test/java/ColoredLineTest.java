@@ -6,7 +6,7 @@ import org.junit.Test;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import nl.makertim.luckpermsui.util.ColoredLine;
+import me.lucko.luckperms.standalone.util.ColoredLine;
 
 public class ColoredLineTest extends Application {
 

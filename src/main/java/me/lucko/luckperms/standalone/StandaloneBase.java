@@ -22,7 +22,7 @@ import me.lucko.luckperms.tracks.TrackManager;
 import me.lucko.luckperms.users.UserManager;
 import me.lucko.luckperms.utils.LocaleManager;
 import me.lucko.luckperms.utils.LogFactory;
-import nl.makertim.luckpermsui.StorageOptions;
+import me.lucko.luckperms.standalone.model.StorageOptions;
 
 import java.io.File;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class StandaloneBase implements LuckPermsPlugin {
     private final ApiProvider apiProvider;
     private final LocaleManager localeManager;
 
-    public StandaloneBase(LPStandaloneApp app, StorageOptions options) {
+	public StandaloneBase(StorageOptions options) {
         logger = java.util.logging.Logger.getGlobal();
         log = LogFactory.wrap(logger);
 
