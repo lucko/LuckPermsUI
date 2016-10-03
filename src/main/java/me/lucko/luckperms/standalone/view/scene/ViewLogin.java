@@ -2,6 +2,7 @@ package me.lucko.luckperms.standalone.view.scene;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -19,6 +20,7 @@ public class ViewLogin extends VBox {
 
 	public ViewLogin(LoginController controller) {
 		super(8);
+		setAlignment(Pos.TOP_CENTER);
 		this.controller = controller;
 		setup();
 	}
@@ -28,6 +30,7 @@ public class ViewLogin extends VBox {
 		grid.setPadding(new Insets(8));
 
 		HBox row = new HBox(8);
+		row.setAlignment(Pos.CENTER);
 		Label databaseTypeLabel = new LuckPermLabel("Database Type");
 		ComboBox<DatabaseType> databaseTypeField = new ComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
@@ -75,6 +78,7 @@ public class ViewLogin extends VBox {
 
 	private void changeForm(DatabaseForm form, GridPane pane) {
 		pane.getChildren().clear();
+		this.form = form;
 		form.build(pane);
 	}
 
