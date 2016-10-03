@@ -4,119 +4,214 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import me.lucko.luckperms.DatabaseType;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.model.StorageOptions;
 import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
 import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
 
-public class ViewLogin extends StackPane {
+public class ViewLogin extends VBox {
 
 	private LoginController controller;
+	private DatabaseForm form;
 
 	public ViewLogin(LoginController controller) {
+		super(8);
 		this.controller = controller;
 		setup();
 	}
 
 	private void setup() {
 		GridPane grid = new GridPane();
-		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setPadding(new Insets(8));
 
-		int row = 0;
+		HBox row = new HBox(8);
 		Label databaseTypeLabel = new LuckPermLabel("Database Type");
 		ComboBox<DatabaseType> databaseTypeField = new ComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
-		GridPane.setConstraints(databaseTypeLabel, 1, row);
-		GridPane.setConstraints(databaseTypeField, 2, row++);
-
-		Label databaseHostLabel = new LuckPermLabel("Host");
-		TextField databaseHostField = new LuckPermTextField();
-		databaseHostField.setPromptText("example.com");
-		GridPane.setConstraints(databaseHostLabel, 1, row);
-		GridPane.setConstraints(databaseHostField, 2, row++);
-
-		Label databasePortLabel = new LuckPermLabel("Port");
-		TextField databasePortField = new LuckPermTextField();
-		databasePortField.setPromptText("3306");
-		GridPane.setConstraints(databasePortLabel, 1, row);
-		GridPane.setConstraints(databasePortField, 2, row++);
-
-		Label databaseLabel = new LuckPermLabel("Database");
-		TextField databaseField = new LuckPermTextField();
-		GridPane.setConstraints(databaseLabel, 1, row);
-		GridPane.setConstraints(databaseField, 2, row++);
-
-		Label usernameLabel = new LuckPermLabel("Username");
-		TextField usernameField = new LuckPermTextField();
-		usernameField.setPromptText("My Awesome Username");
-		GridPane.setConstraints(usernameLabel, 1, row);
-		GridPane.setConstraints(usernameField, 2, row++);
-
-		Label passwordLabel = new LuckPermLabel("Password");
-		TextField passwordField = new PasswordField();
-		passwordField.setPromptText("My Secret Password");
-		GridPane.setConstraints(passwordLabel, 1, row);
-		GridPane.setConstraints(passwordField, 2, row++);
-
-		// TODO Add different options for type / Mongo / H2 / SQLite
-        // TODO Perhaps dynamically change the buttons here depending on which 'Database type' is chosen?
+		row.getChildren().addAll(databaseTypeLabel, databaseTypeField);
 
 		Button loginButton = new Button("Login");
 		loginButton.setOnAction((ActionEvent click) -> {
-            DatabaseType type = databaseTypeField.getValue();
-            if (type == DatabaseType.MYSQL) {
-				int port = 3306;
-                try {
-                    port = Integer.parseInt(databasePortField.getText());
-                } catch (NumberFormatException e) {
-                    System.err.println(databasePortField.getText() + " is not a number.");
-                }
-
-                setupBase(new StorageOptions(
-						type,
-                        databaseHostField.getText() + ":" + port,
-                        databaseField.getText(),
-                        usernameField.getText(),
-                        passwordField.getText(),
-                        null)
-                );
-            } else {
-                // TODO Add other types
-            }
-        });
+			StorageOptions options = form.onConfirm();
+			controller.startupManageView(options);
+		});
 
 		databaseTypeField.valueProperty().addListener(change -> {
 			DatabaseType selected = databaseTypeField.getValue();
-			if (selected == DatabaseType.MYSQL || selected == DatabaseType.MONGODB) {
-				databaseHostLabel.setText("Host");
-				databaseHostField.setPromptText("example.com");
-				databasePortField.setDisable(false);
-				databaseField.setDisable(false);
-				usernameField.setDisable(false);
-				passwordField.setDisable(false);
-			} else {
-				databaseHostLabel.setText("File");
-				databaseHostField.setPromptText("/usr/database.db");
-				databasePortField.setDisable(true);
-				databaseField.setDisable(true);
-				usernameField.setDisable(true);
-				passwordField.setDisable(true);
+			if (selected == null) {
+				return;
+			}
+			switch (selected) {
+			case MYSQL:
+				changeForm(new MySQLForm(), grid);
+				break;
+			case SQLITE:
+				changeForm(new SQLiteForm(), grid);
+				break;
+			case H2:
+				changeForm(new H2Form(), grid);
+				break;
+			case JSON:
+				changeForm(new JSONForm(), grid);
+				break;
+			case YAML:
+				changeForm(new YAMLForm(), grid);
+				break;
+			case SPLIT:
+				changeForm(new SPLITForm(), grid);
+				break;
+			case MONGODB:
+				changeForm(new MongoDBForm(), grid);
+				break;
 			}
 		});
+		databaseTypeField.valueProperty().setValue(databaseTypeField.getItems().get(0));
 
-		GridPane.setConstraints(loginButton, 2, row);
-
-		grid.getChildren().addAll(databaseTypeLabel, databaseTypeField, databaseHostLabel, databaseHostField,
-			databasePortLabel, databasePortField, databaseLabel, databaseField, usernameLabel, usernameField,
-			passwordLabel, passwordField, loginButton);
-
-		this.getChildren().add(grid);
+		getChildren().addAll(row, grid, loginButton);
 	}
 
-	private void setupBase(StorageOptions options) {
-		controller.startupManageView(options);
+	private void changeForm(DatabaseForm form, GridPane pane) {
+		pane.getChildren().clear();
+		form.build(pane);
 	}
 
+	public interface DatabaseForm {
+		void build(GridPane pane);
+
+		StorageOptions onConfirm();
+	}
+
+	public static class MySQLForm extends LoginForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.MYSQL;
+		}
+	}
+
+	public static class SQLiteForm extends FileForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.SQLITE;
+		}
+	}
+
+	public static class H2Form extends FileForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.H2;
+		}
+	}
+
+	public static class JSONForm extends FileForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.JSON;
+		}
+	}
+
+	public static class YAMLForm extends FileForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.YAML;
+		}
+	}
+
+	// Don't know the type split...
+	public static class SPLITForm extends FileForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.SPLIT;
+		}
+	}
+
+	public static class MongoDBForm extends LoginForm {
+		@Override
+		public DatabaseType getType() {
+			return DatabaseType.MONGODB;
+		}
+	}
+
+	public static abstract class FileForm implements DatabaseForm {
+		private TextField fileLocation;
+
+		@Override
+		public void build(GridPane pane) {
+			int row = 0;
+			Label fileLocationLabel = new LuckPermLabel("Location");
+			fileLocation = new LuckPermTextField();
+			fileLocation.setPromptText("path/to/file");
+			GridPane.setConstraints(fileLocationLabel, 1, ++row);
+			GridPane.setConstraints(fileLocation, 2, row);
+
+			Button buttonBrowse = new Button("Browse...");
+			buttonBrowse.setOnMouseClicked(click -> {
+				// TODO: open file brwsr & set fileLocation to that place.
+			});
+			GridPane.setConstraints(buttonBrowse, 1, ++row, 2, 1);
+
+			pane.getChildren().addAll(fileLocationLabel, fileLocation, buttonBrowse);
+		}
+
+		@Override
+		public StorageOptions onConfirm() {
+			return new StorageOptions(getType(), fileLocation.getText(), null, null, null, null);
+		}
+
+		public abstract DatabaseType getType();
+	}
+
+	public static abstract class LoginForm implements DatabaseForm {
+		private TextField databaseHostField;
+		private TextField databasePortField;
+		private TextField databaseField;
+		private TextField usernameField;
+		private TextField passwordField;
+
+		@Override
+		public void build(GridPane pane) {
+			int row = 0;
+			Label databaseHostLabel = new LuckPermLabel("Host");
+			databaseHostField = new LuckPermTextField();
+			databaseHostField.setPromptText("example.com");
+			GridPane.setConstraints(databaseHostLabel, 1, ++row);
+			GridPane.setConstraints(databaseHostField, 2, row);
+
+			Label databasePortLabel = new LuckPermLabel("Port");
+			databasePortField = new LuckPermTextField();
+			databasePortField.setPromptText("3306");
+			GridPane.setConstraints(databasePortLabel, 1, ++row);
+			GridPane.setConstraints(databasePortField, 2, row);
+
+			Label databaseLabel = new LuckPermLabel("Database");
+			databaseField = new LuckPermTextField();
+			GridPane.setConstraints(databaseLabel, 1, ++row);
+			GridPane.setConstraints(databaseField, 2, row);
+
+			Label usernameLabel = new LuckPermLabel("Username");
+			usernameField = new LuckPermTextField();
+			usernameField.setPromptText("My Awesome Username");
+			GridPane.setConstraints(usernameLabel, 1, ++row);
+			GridPane.setConstraints(usernameField, 2, row);
+
+			Label passwordLabel = new LuckPermLabel("Password");
+			passwordField = new PasswordField();
+			passwordField.setPromptText("My Secret Password");
+			GridPane.setConstraints(passwordLabel, 1, ++row);
+			GridPane.setConstraints(passwordField, 2, row);
+
+			pane.getChildren().addAll(databaseHostLabel, databaseHostField, databasePortLabel, databasePortField,
+				databaseLabel, databaseField, usernameLabel, usernameField, passwordLabel, passwordField);
+		}
+
+		@Override
+		public StorageOptions onConfirm() {
+			return new StorageOptions(getType(), databaseHostField.getText() + ":" + databasePortField.getText(),
+					databaseField.getText(), usernameField.getText(), passwordField.getText(), null);
+		}
+
+		public abstract DatabaseType getType();
+	}
 }

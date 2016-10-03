@@ -2,6 +2,7 @@ package me.lucko.luckperms.standalone;
 
 import lombok.Getter;
 import me.lucko.luckperms.LPStandaloneApp;
+import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.LuckPermsPlugin;
 import me.lucko.luckperms.api.Logger;
 import me.lucko.luckperms.api.PlatformType;
@@ -210,5 +211,5 @@ public class StandaloneBase implements LuckPermsPlugin {
     @Override
     public boolean isPluginLoaded(String name) {
         return false;
-    }
+	}
 }

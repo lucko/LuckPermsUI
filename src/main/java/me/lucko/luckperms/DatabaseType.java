@@ -12,6 +12,7 @@ public enum DatabaseType {
 	H2("h2"),
 	JSON("json"),
 	YAML("yaml"),
+	SPLIT("split"),
 	MONGODB("mongodb");
 
 	public final String type;
