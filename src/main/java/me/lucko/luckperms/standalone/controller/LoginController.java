@@ -4,12 +4,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.Getter;
 import me.lucko.luckperms.LPStandaloneApp;
-import me.lucko.luckperms.LuckPermsPlugin;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
+import me.lucko.luckperms.standalone.view.scene.Manager;
 import me.lucko.luckperms.storage.Datastore;
-import me.lucko.luckperms.storage.SplitDatastore;
 import me.lucko.luckperms.storage.methods.*;
 
 public class LoginController {
@@ -48,7 +46,7 @@ public class LoginController {
 
 		try {
 			Stage stage = app.getPrimaryStage();
-			stage.setScene(new Scene(new ViewManager(), 1024, 768));
+			stage.setScene(new Scene(new Manager(), 1024, 768));
 			stage.setMinWidth(1000);
 			stage.setMinHeight(768);
 			stage.setMaxHeight(768);

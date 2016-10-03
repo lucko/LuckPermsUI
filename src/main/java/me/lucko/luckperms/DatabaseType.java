@@ -7,12 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DatabaseType {
 
-	MYSQL("mysql"),
-	SQLITE("sqlite"),
-	H2("h2"),
-	JSON("json"),
-	YAML("yaml"),
-	MONGODB("mongodb");
+	MYSQL("mysql"), SQLITE("sqlite"), H2("h2"), JSON("json"), YAML("yaml"), MONGODB("mongodb");
 
 	public final String type;
 

@@ -20,25 +20,27 @@ import me.lucko.luckperms.api.implementation.internal.GroupLink;
 import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
 import me.lucko.luckperms.exceptions.ObjectLacksException;
 import me.lucko.luckperms.groups.Group;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
-import me.lucko.luckperms.standalone.view.popup.FormPermissionAdd;
-import me.lucko.luckperms.standalone.view.popup.FormPermissionChange;
-import me.lucko.luckperms.standalone.view.popup.FormPermissionRemove;
-import me.lucko.luckperms.standalone.util.elements.*;
+import me.lucko.luckperms.standalone.util.ColoredLine;
+import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
+import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
+import me.lucko.luckperms.standalone.util.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
-import me.lucko.luckperms.standalone.util.ColoredLine;
+import me.lucko.luckperms.standalone.view.popup.PermissionAdd;
+import me.lucko.luckperms.standalone.view.popup.PermissionChange;
+import me.lucko.luckperms.standalone.view.popup.PermissionRemove;
+import me.lucko.luckperms.standalone.view.scene.Manager;
 
-public class SidePaneGroup extends VBox {
+public class SideGroup extends VBox {
 
-	private ViewManager parent;
+	private Manager parent;
 	private Group group;
 	private TableView<Node> permissionList;
 	TextField searchServer;
 	TextField searchWorld;
 	TextField searchNode;
 
-	public SidePaneGroup(ViewManager parent, Group group) {
+	public SideGroup(Manager parent, Group group) {
 		super();
 		this.parent = parent;
 		this.group = group;
@@ -109,17 +111,17 @@ public class SidePaneGroup extends VBox {
 	private void setupTable() {
 		permissionList = new TableView<>();
 		permissionList.setRowFactory(rf -> new TableRow<Node>() {
-            @Override
-            protected void updateItem(Node permission, boolean empty) {
-                if (permission == null) {
-                    setTextFill(Color.BLACK);
-                } else if (permission.getValue()) {
-                    setTextFill(Color.GREEN);
-                } else {
-                    setTextFill(Color.RED);
-                }
-            }
-        });
+			@Override
+			protected void updateItem(Node permission, boolean empty) {
+				if (permission == null) {
+					setTextFill(Color.BLACK);
+				} else if (permission.getValue()) {
+					setTextFill(Color.GREEN);
+				} else {
+					setTextFill(Color.RED);
+				}
+			}
+		});
 
 		TableColumn node = new TableColumn("Node");
 		node.setCellValueFactory(new PropertyValueFactory<Node, UUID>("node"));
@@ -141,7 +143,7 @@ public class SidePaneGroup extends VBox {
 		if (group == null) {
 			return;
 		}
-		FormBase form = new FormPermissionAdd(parent, group);
+		FormBase form = new PermissionAdd(parent, group);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] values = fr.getResult();
@@ -160,10 +162,10 @@ public class SidePaneGroup extends VBox {
 					world = null;
 				}
 				/*
-				Permission perm = new Permission(server, world, node, active);
-				group.setPermission(perm);
-				GroupManager.updatePermissions(group);
-				*/
+				 * Permission perm = new Permission(server, world, node,
+				 * active); group.setPermission(perm);
+				 * GroupManager.updatePermissions(group);
+				 */
 				// TODO
 				fillPermissionList();
 			}
@@ -174,7 +176,7 @@ public class SidePaneGroup extends VBox {
 		if (group == null || permission == null) {
 			return;
 		}
-		FormBase form = new FormPermissionChange(parent, group, permission);
+		FormBase form = new PermissionChange(parent, group, permission);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] values = fr.getResult();
@@ -198,7 +200,8 @@ public class SidePaneGroup extends VBox {
 
 				}
 
-				Node perm = new me.lucko.luckperms.core.Node.Builder(node).setServer(server).setWorld(world).setValue(active).build();
+				Node perm = new me.lucko.luckperms.core.Node.Builder(node).setServer(server).setWorld(world)
+						.setValue(active).build();
 				try {
 					group.setPermission(perm);
 				} catch (ObjectAlreadyHasException e) {
@@ -217,7 +220,7 @@ public class SidePaneGroup extends VBox {
 		if (permission == null) {
 			return;
 		}
-		FormBase form = new FormPermissionRemove(parent, group, permission);
+		FormBase form = new PermissionRemove(parent, group, permission);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.YES) {
 				// TODO remove & update permission
@@ -244,17 +247,19 @@ public class SidePaneGroup extends VBox {
 		} catch (Exception e) {
 		}
 		for (Node permission : group.getNodes()) {
-			if (!searchNode.isEmpty() && (permission.getPermission() == null || !permission.getPermission().contains(searchNode)
-					&& (nodePattern != null && !nodePattern.matcher(permission.getPermission()).find()))) {
+			if (!searchNode.isEmpty()
+					&& (permission.getPermission() == null || !permission.getPermission().contains(searchNode)
+							&& (nodePattern != null && !nodePattern.matcher(permission.getPermission()).find()))) {
 				continue;
 			}
-			if (!searchWorld.isEmpty() && (permission.getWorld() == null || !permission.getWorld().get().contains(searchWorld)
-					&& (worldPattern != null && !worldPattern.matcher(permission.getWorld().get()).find()))) {
+			if (!searchWorld.isEmpty()
+					&& (permission.getWorld() == null || !permission.getWorld().get().contains(searchWorld)
+							&& (worldPattern != null && !worldPattern.matcher(permission.getWorld().get()).find()))) {
 				continue;
 			}
-			if (!searchServer.isEmpty()
-					&& (permission.getServer() == null || !permission.getServer().get().contains(searchServer)
-							&& (serverPattern != null && !serverPattern.matcher(permission.getServer().get()).find()))) {
+			if (!searchServer.isEmpty() && (permission.getServer() == null
+					|| !permission.getServer().get().contains(searchServer) && (serverPattern != null
+							&& !serverPattern.matcher(permission.getServer().get()).find()))) {
 				continue;
 			}
 			permissionList.getItems().add(permission);

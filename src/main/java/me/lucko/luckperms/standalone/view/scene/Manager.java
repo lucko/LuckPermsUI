@@ -10,10 +10,10 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
-import me.lucko.luckperms.standalone.view.centerpane.PaneGroup;
-import me.lucko.luckperms.standalone.view.centerpane.PaneUser;
+import me.lucko.luckperms.standalone.view.centerpane.GroupManager;
+import me.lucko.luckperms.standalone.view.centerpane.UserManager;
 
-public class ViewManager extends StackPane {
+public class Manager extends StackPane {
 
 	BorderPane mainLayer;
 	VBox menu;
@@ -21,7 +21,7 @@ public class ViewManager extends StackPane {
 	Pane sideView;
 	StackPane overlay;
 
-	public ViewManager() {
+	public Manager() {
 		mainLayer = new BorderPane();
 		overlay = new StackPane();
 		overlay.setPickOnBounds(false);
@@ -45,8 +45,8 @@ public class ViewManager extends StackPane {
 		Button groupButton = new Button("Groups");
 		Button userButton = new Button("User manager");
 
-		groupButton.setOnAction(action -> setMainView(new PaneGroup(this)));
-		userButton.setOnAction(action -> setMainView(new PaneUser(this)));
+		groupButton.setOnAction(action -> setMainView(new GroupManager(this)));
+		userButton.setOnAction(action -> setMainView(new UserManager(this)));
 
 		menu.getChildren().addAll(groupButton, userButton);
 		mainLayer.setLeft(menu);

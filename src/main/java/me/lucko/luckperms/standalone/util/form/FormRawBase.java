@@ -2,11 +2,11 @@ package me.lucko.luckperms.standalone.util.form;
 
 import java.util.List;
 
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
+import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class FormRawBase extends FormBase {
 
-	public FormRawBase(ViewManager parent, String name, List<FormItem> items, List<FormResultType> buttons) {
+	public FormRawBase(Manager parent, String name, List<FormItem> items, List<FormResultType> buttons) {
 		super(parent, name, items, buttons);
 	}
 

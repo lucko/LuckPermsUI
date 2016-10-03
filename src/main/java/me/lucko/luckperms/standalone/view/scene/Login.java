@@ -1,5 +1,7 @@
 package me.lucko.luckperms.standalone.view.scene;
 
+import java.io.File;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,18 +9,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import me.lucko.luckperms.DatabaseType;
+import me.lucko.luckperms.api.data.Callback;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.model.StorageOptions;
 import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
 import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
 
-public class ViewLogin extends VBox {
+public class Login extends VBox {
 
 	private LoginController controller;
 	private DatabaseForm form;
 
-	public ViewLogin(LoginController controller) {
+	public Login(LoginController controller) {
 		super(8);
 		setAlignment(Pos.TOP_CENTER);
 		this.controller = controller;
@@ -31,7 +35,7 @@ public class ViewLogin extends VBox {
 
 		HBox row = new HBox(8);
 		row.setAlignment(Pos.CENTER);
-		Label databaseTypeLabel = new LuckPermLabel("Database Type");
+		Label databaseTypeLabel = new LuckPermLabel("Database type");
 		ComboBox<DatabaseType> databaseTypeField = new ComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
 		row.getChildren().addAll(databaseTypeLabel, databaseTypeField);
@@ -47,36 +51,36 @@ public class ViewLogin extends VBox {
 			if (selected == null) {
 				return;
 			}
-			switch (selected) {
-			case MYSQL:
-				changeForm(new MySQLForm(), grid);
-				break;
-			case SQLITE:
-				changeForm(new SQLiteForm(), grid);
-				break;
-			case H2:
-				changeForm(new H2Form(), grid);
-				break;
-			case JSON:
-				changeForm(new JSONForm(), grid);
-				break;
-			case YAML:
-				changeForm(new YAMLForm(), grid);
-				break;
-			case MONGODB:
-				changeForm(new MongoDBForm(), grid);
-				break;
-			}
+			changeForm(selected, grid);
 		});
 		databaseTypeField.valueProperty().setValue(databaseTypeField.getItems().get(0));
 
 		getChildren().addAll(row, grid, loginButton);
 	}
 
-	private void changeForm(DatabaseForm form, GridPane pane) {
-		pane.getChildren().clear();
-		this.form = form;
-		form.build(pane);
+	private void changeForm(DatabaseType type, GridPane grid) {
+		grid.getChildren().clear();
+		switch (type) {
+		case MYSQL:
+			form = new MySQLForm();
+			break;
+		case SQLITE:
+			form = new SQLiteForm();
+			break;
+		case H2:
+			form = new H2Form();
+			break;
+		case JSON:
+			form = new JSONForm();
+			break;
+		case YAML:
+			form = new YAMLForm();
+			break;
+		case MONGODB:
+			form = new MongoDBForm();
+			break;
+		}
+		form.build(grid);
 	}
 
 	public interface DatabaseForm {
@@ -85,49 +89,49 @@ public class ViewLogin extends VBox {
 		StorageOptions onConfirm();
 	}
 
-	public static class MySQLForm extends LoginForm {
+	public class MySQLForm extends LoginForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.MYSQL;
 		}
 	}
 
-	public static class SQLiteForm extends FileForm {
+	public class SQLiteForm extends FileForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.SQLITE;
 		}
 	}
 
-	public static class H2Form extends FileForm {
+	public class H2Form extends FileForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.H2;
 		}
 	}
 
-	public static class JSONForm extends FileForm {
+	public class JSONForm extends FileForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.JSON;
 		}
 	}
 
-	public static class YAMLForm extends FileForm {
+	public class YAMLForm extends FileForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.YAML;
 		}
 	}
 
-	public static class MongoDBForm extends LoginForm {
+	public class MongoDBForm extends LoginForm {
 		@Override
 		public DatabaseType getType() {
 			return DatabaseType.MONGODB;
 		}
 	}
 
-	public static abstract class FileForm implements DatabaseForm {
+	public abstract class FileForm implements DatabaseForm {
 		private TextField fileLocation;
 
 		@Override
@@ -141,7 +145,7 @@ public class ViewLogin extends VBox {
 
 			Button buttonBrowse = new Button("Browse...");
 			buttonBrowse.setOnMouseClicked(click -> {
-				// TODO: open file brwsr & set fileLocation to that place.
+				chooseFile(newFile -> fileLocationLabel.setText(newFile.getAbsolutePath()));
 			});
 			GridPane.setConstraints(buttonBrowse, 1, ++row, 2, 1);
 
@@ -153,10 +157,19 @@ public class ViewLogin extends VBox {
 			return new StorageOptions(getType(), fileLocation.getText(), null, null, null);
 		}
 
+		private void chooseFile(Callback<File> fileCallback) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Choose database file for type '" + getType().getType() + "'.");
+			File file = fileChooser.showOpenDialog(Login.this.getScene().getWindow());
+			if (file != null) {
+				fileCallback.onComplete(file);
+			}
+		}
+
 		public abstract DatabaseType getType();
 	}
 
-	public static abstract class LoginForm implements DatabaseForm {
+	public abstract class LoginForm implements DatabaseForm {
 		private TextField databaseHostField;
 		private TextField databasePortField;
 		private TextField databaseField;

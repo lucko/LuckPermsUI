@@ -15,23 +15,23 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import me.lucko.luckperms.groups.Group;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
-import me.lucko.luckperms.standalone.view.popup.FormGroupDelete;
-import me.lucko.luckperms.standalone.view.popup.FormGroupNew;
-import me.lucko.luckperms.standalone.view.sidepane.SidePaneGroup;
 import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
 import me.lucko.luckperms.standalone.util.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
+import me.lucko.luckperms.standalone.view.popup.GroupDelete;
+import me.lucko.luckperms.standalone.view.popup.GroupNew;
+import me.lucko.luckperms.standalone.view.scene.Manager;
+import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
-public class PaneGroup extends VBox {
+public class GroupManager extends VBox {
 
-	private ViewManager parent;
+	private Manager parent;
 	private TextField search;
 	private TableView<Group> groups;
 
-	public PaneGroup(ViewManager viewManager) {
-		parent = viewManager;
+	public GroupManager(Manager manager) {
+		parent = manager;
 		setup();
 	}
 
@@ -51,7 +51,7 @@ public class PaneGroup extends VBox {
 		groups.getSelectionModel().getSelectedItems().addListener((InvalidationListener) change -> {
 			Group group = groups.getSelectionModel().getSelectedItem();
 			if (group != null) {
-				parent.setSideView(new SidePaneGroup(parent, group));
+				parent.setSideView(new SideGroup(parent, group));
 			}
 		});
 		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onNewGroup(search.getText()));
@@ -67,7 +67,7 @@ public class PaneGroup extends VBox {
 		if (group == null) {
 			return;
 		}
-		FormBase form = new FormGroupDelete(parent, group);
+		FormBase form = new GroupDelete(parent, group);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] result = fr.getResult();
@@ -83,7 +83,7 @@ public class PaneGroup extends VBox {
 	}
 
 	private void onNewGroup(String preFilled) {
-		FormBase form = new FormGroupNew(parent, preFilled);
+		FormBase form = new GroupNew(parent, preFilled);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] result = fr.getResult();
@@ -103,7 +103,9 @@ public class PaneGroup extends VBox {
 		TableColumn count = new TableColumn("Users in group");
 		count.setCellValueFactory(cvf -> {
 			TableColumn.CellDataFeatures cdf = (TableColumn.CellDataFeatures) cvf;
-			ObservableValue ret = new SimpleIntegerProperty(1); // TODO GroupManager.countUsersInGroup((Group) cdf.getValue())
+			ObservableValue ret = new SimpleIntegerProperty(1); // TODO
+																// GroupManager.countUsersInGroup((Group)
+																// cdf.getValue())
 			return ret;
 		});
 

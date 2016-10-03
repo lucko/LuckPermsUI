@@ -10,19 +10,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
 import me.lucko.luckperms.standalone.util.StringUtil;
+import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
+import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class FormBase extends BorderPane {
 
-	private ViewManager view;
+	private Manager view;
 	protected GridPane content;
 	protected Control[] controls;
 	protected FormResultType result = FormResultType.CLOSE;
 	private Consumer<FormResult> onFormComplete;
 
-	public FormBase(ViewManager view, String name, List<FormItem> items, List<FormResultType> buttons) {
+	public FormBase(Manager view, String name, List<FormItem> items, List<FormResultType> buttons) {
 		this.view = view;
 		setPadding(new Insets(10, 10, 10, 10));
 

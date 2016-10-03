@@ -10,24 +10,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
-import me.lucko.luckperms.standalone.view.popup.FormUserNew;
-import me.lucko.luckperms.users.User;
-import me.lucko.luckperms.users.UserManager;
+import me.lucko.luckperms.standalone.util.UsernameGetter;
 import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
 import me.lucko.luckperms.standalone.util.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
-import me.lucko.luckperms.standalone.util.UsernameGetter;
+import me.lucko.luckperms.standalone.view.popup.UserNew;
+import me.lucko.luckperms.standalone.view.scene.Manager;
+import me.lucko.luckperms.users.User;
 
-public class PaneUser extends BorderPane {
+public class UserManager extends BorderPane {
 
-	private ViewManager parent;
+	private Manager parent;
 	private TableView<User> userList;
 	private TextField nameSearcher;
 
-	public PaneUser(ViewManager viewManager) {
-		parent = viewManager;
+	public UserManager(Manager manager) {
+		parent = manager;
 		setup();
 	}
 
@@ -58,7 +57,7 @@ public class PaneUser extends BorderPane {
 	}
 
 	private void onUserAdd() {
-		FormBase newUserForm = new FormUserNew(parent, nameSearcher.getText());
+		FormBase newUserForm = new UserNew(parent, nameSearcher.getText());
 		newUserForm.showForm(fr -> {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] result = fr.getResult();

@@ -7,13 +7,15 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.controller.LoginController;
-import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.standalone.view.scene.ViewLogin;
+import me.lucko.luckperms.standalone.view.scene.Login;
 
 public class LPStandaloneApp extends Application {
-	public static final Font FONT = Font.loadFont(LPStandaloneApp.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
-	public static final Font MONOSPACE = Font
-			.loadFont(LPStandaloneApp.class.getResourceAsStream("/assets/Letter Gothic.ttf"), 12);
+	public static final Font FONT;
+
+	static {
+		Font font = Font.loadFont(LPStandaloneApp.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
+		FONT = font == null ? Font.font(12) : font;
+	}
 
 	private StandaloneBase base;
 
@@ -29,7 +31,7 @@ public class LPStandaloneApp extends Application {
 		this.primaryStage = primaryStage;
 
 		LoginController controller = new LoginController(this);
-		ViewLogin login = new ViewLogin(controller);
+		Login login = new Login(controller);
 
 		Scene startScene = new Scene(login);
 		primaryStage.setTitle("LuckPerms User Interface\u2122");

@@ -6,14 +6,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.groups.Group;
-import me.lucko.luckperms.standalone.view.scene.ViewManager;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormItem;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
+import me.lucko.luckperms.standalone.view.scene.Manager;
 
-public class FormPermissionChange extends FormBase {
+public class PermissionChange extends FormBase {
 
-	public FormPermissionChange(ViewManager view, Group group, String node, String server, String world, boolean active) {
+	public PermissionChange(Manager view, Group group, String node, String server, String world, boolean active) {
 		super(view, "Add permission for group: " + group.getName(),
 				Arrays.asList(new FormItem("Permission", new TextField(node == null ? "" : node)),
 					new FormItem("Server [optional]", new TextField(server == null ? "" : server)),
@@ -22,7 +22,7 @@ public class FormPermissionChange extends FormBase {
 				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
 	}
 
-	public FormPermissionChange(ViewManager view, Group group, Node perms) {
+	public PermissionChange(Manager view, Group group, Node perms) {
 		this(view, group, perms.getPermission(), perms.getServer().get(), perms.getWorld().get(), perms.getValue());
 	}
 
