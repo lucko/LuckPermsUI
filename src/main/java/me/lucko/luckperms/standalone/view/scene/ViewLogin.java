@@ -63,9 +63,6 @@ public class ViewLogin extends VBox {
 			case YAML:
 				changeForm(new YAMLForm(), grid);
 				break;
-			case SPLIT:
-				changeForm(new SPLITForm(), grid);
-				break;
 			case MONGODB:
 				changeForm(new MongoDBForm(), grid);
 				break;
@@ -123,14 +120,6 @@ public class ViewLogin extends VBox {
 		}
 	}
 
-	// Don't know the type split...
-	public static class SPLITForm extends FileForm {
-		@Override
-		public DatabaseType getType() {
-			return DatabaseType.SPLIT;
-		}
-	}
-
 	public static class MongoDBForm extends LoginForm {
 		@Override
 		public DatabaseType getType() {
@@ -161,7 +150,7 @@ public class ViewLogin extends VBox {
 
 		@Override
 		public StorageOptions onConfirm() {
-			return new StorageOptions(getType(), fileLocation.getText(), null, null, null, null);
+			return new StorageOptions(getType(), fileLocation.getText(), null, null, null);
 		}
 
 		public abstract DatabaseType getType();
@@ -213,7 +202,7 @@ public class ViewLogin extends VBox {
 		@Override
 		public StorageOptions onConfirm() {
 			return new StorageOptions(getType(), databaseHostField.getText() + ":" + databasePortField.getText(),
-					databaseField.getText(), usernameField.getText(), passwordField.getText(), null);
+					databaseField.getText(), usernameField.getText(), passwordField.getText());
 		}
 
 		public abstract DatabaseType getType();
