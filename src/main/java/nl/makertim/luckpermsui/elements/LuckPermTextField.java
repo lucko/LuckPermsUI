@@ -1,16 +1,17 @@
 package nl.makertim.luckpermsui.elements;
 
 import javafx.scene.control.TextField;
+import me.lucko.luckperms.LPStandaloneApp;
 
 public class LuckPermTextField extends TextField {
 
 	public LuckPermTextField() {
 		super();
-		setFont(MainWindow.FONT);
+		setFont(LPStandaloneApp.FONT);
 	}
 
 	public LuckPermTextField(String preFilled) {
 		super(preFilled);
-		setFont(MainWindow.FONT);
+		setFont(LPStandaloneApp.FONT);
 	}
 }

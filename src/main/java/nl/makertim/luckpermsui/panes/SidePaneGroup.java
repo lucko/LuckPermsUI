@@ -13,19 +13,23 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import me.lucko.luckperms.LPStandaloneApp;
+import me.lucko.luckperms.api.MetaUtils;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.implementation.internal.GroupLink;
+import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
+import me.lucko.luckperms.exceptions.ObjectLacksException;
+import me.lucko.luckperms.groups.Group;
 import nl.makertim.luckpermsui.elements.*;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
-import nl.makertim.luckpermsui.internal.Group;
-import nl.makertim.luckpermsui.internal.GroupManager;
-import nl.makertim.luckpermsui.internal.Permission;
 import nl.makertim.luckpermsui.util.ColoredLine;
 
 public class SidePaneGroup extends VBox {
 
 	private ViewManager parent;
 	private Group group;
-	private TableView<Permission> permissionList;
+	private TableView<Node> permissionList;
 	TextField searchServer;
 	TextField searchWorld;
 	TextField searchNode;
@@ -58,14 +62,17 @@ public class SidePaneGroup extends VBox {
 
 		VBox groupInfo = new VBox(1);
 		groupInfo.setPadding(new Insets(3, 0, 3, 3));
-		if (!group.getPrefix().isEmpty()) {
-			ColoredLine prefixLine = new ColoredLine("Prefix = " + group.getPrefix());
-			prefixLine.setFont(MainWindow.FONT);
+
+		String prefix = MetaUtils.getPrefix(new GroupLink(group), null, null, true);
+		if (prefix != null) {
+			ColoredLine prefixLine = new ColoredLine("Prefix = " + prefix);
+			prefixLine.setFont(LPStandaloneApp.FONT);
 			groupInfo.getChildren().add(prefixLine);
 		}
-		if (group.getInherit().length > 0) {
+
+		if (group.getGroupNames().size() > 0) {
 			groupInfo.getChildren().add(new LuckPermLabel("Inherits from:"));
-			for (String parentGroup : group.getInherit()) {
+			for (String parentGroup : group.getGroupNames()) {
 				groupInfo.getChildren().add(new LuckPermLabel("  " + parentGroup));
 			}
 		}
@@ -97,12 +104,12 @@ public class SidePaneGroup extends VBox {
 
 	private void setupTable() {
 		permissionList = new TableView<>();
-		permissionList.setRowFactory(rf -> new TableRow<Permission>() {
+		permissionList.setRowFactory(rf -> new TableRow<Node>() {
             @Override
-            protected void updateItem(Permission permission, boolean empty) {
+            protected void updateItem(Node permission, boolean empty) {
                 if (permission == null) {
                     setTextFill(Color.BLACK);
-                } else if (permission.isActive()) {
+                } else if (permission.getValue()) {
                     setTextFill(Color.GREEN);
                 } else {
                     setTextFill(Color.RED);
@@ -111,13 +118,13 @@ public class SidePaneGroup extends VBox {
         });
 
 		TableColumn node = new TableColumn("Node");
-		node.setCellValueFactory(new PropertyValueFactory<Permission, UUID>("node"));
+		node.setCellValueFactory(new PropertyValueFactory<Node, UUID>("node"));
 		TableColumn server = new TableColumn("Server");
-		server.setCellValueFactory(new PropertyValueFactory<Permission, UUID>("server"));
+		server.setCellValueFactory(new PropertyValueFactory<Node, UUID>("server"));
 		TableColumn world = new TableColumn("World");
-		world.setCellValueFactory(new PropertyValueFactory<Permission, UUID>("world"));
+		world.setCellValueFactory(new PropertyValueFactory<Node, UUID>("world"));
 		TableColumn active = new TableColumn("Allowed");
-		active.setCellValueFactory(new PropertyValueFactory<Permission, UUID>("active"));
+		active.setCellValueFactory(new PropertyValueFactory<Node, UUID>("active"));
 
 		permissionList.getColumns().addAll(node, server, world, active);
 
@@ -148,15 +155,18 @@ public class SidePaneGroup extends VBox {
 				if (world == null || world.isEmpty()) {
 					world = null;
 				}
+				/*
 				Permission perm = new Permission(server, world, node, active);
 				group.setPermission(perm);
 				GroupManager.updatePermissions(group);
+				*/
+				// TODO
 				fillPermissionList();
 			}
 		});
 	}
 
-	private void onPermissionChange(Permission permission) {
+	private void onPermissionChange(Node permission) {
 		if (group == null || permission == null) {
 			return;
 		}
@@ -178,16 +188,25 @@ public class SidePaneGroup extends VBox {
 				if (world == null || world.isEmpty()) {
 					world = null;
 				}
-				group.removePermission(permission);
-				Permission perm = new Permission(server, world, node, active);
-				group.setPermission(perm);
-				GroupManager.updatePermissions(group);
+				try {
+					group.unsetPermission(permission);
+				} catch (ObjectLacksException ignored) {
+
+				}
+
+				Node perm = new me.lucko.luckperms.core.Node.Builder(node).setServer(server).setWorld(world).setValue(active).build();
+				try {
+					group.setPermission(perm);
+				} catch (ObjectAlreadyHasException e) {
+					e.printStackTrace();
+				}
+				// TODO save
 				fillPermissionList();
 			}
 		});
 	}
 
-	private void onPermissionRemove(Permission permission) {
+	private void onPermissionRemove(Node permission) {
 		if (group == null) {
 			return;
 		}
@@ -197,8 +216,7 @@ public class SidePaneGroup extends VBox {
 		FormBase form = new FormPermissionRemove(parent, group, permission);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.YES) {
-				group.removePermission(permission);
-				GroupManager.updatePermissions(group);
+				// TODO remove & update permission
 				fillPermissionList();
 			}
 		});
@@ -221,18 +239,18 @@ public class SidePaneGroup extends VBox {
 			nodePattern = Pattern.compile(searchNode);
 		} catch (Exception e) {
 		}
-		for (Permission permission : group.getPermissions()) {
-			if (!searchNode.isEmpty() && (permission.getNode() == null || !permission.getNode().contains(searchNode)
-					&& (nodePattern != null && !nodePattern.matcher(permission.getNode()).find()))) {
+		for (Node permission : group.getNodes()) {
+			if (!searchNode.isEmpty() && (permission.getPermission() == null || !permission.getPermission().contains(searchNode)
+					&& (nodePattern != null && !nodePattern.matcher(permission.getPermission()).find()))) {
 				continue;
 			}
-			if (!searchWorld.isEmpty() && (permission.getWorld() == null || !permission.getWorld().contains(searchWorld)
-					&& (worldPattern != null && !worldPattern.matcher(permission.getWorld()).find()))) {
+			if (!searchWorld.isEmpty() && (permission.getWorld() == null || !permission.getWorld().get().contains(searchWorld)
+					&& (worldPattern != null && !worldPattern.matcher(permission.getWorld().get()).find()))) {
 				continue;
 			}
 			if (!searchServer.isEmpty()
-					&& (permission.getServer() == null || !permission.getServer().contains(searchServer)
-							&& (serverPattern != null && !serverPattern.matcher(permission.getServer()).find()))) {
+					&& (permission.getServer() == null || !permission.getServer().get().contains(searchServer)
+							&& (serverPattern != null && !serverPattern.matcher(permission.getServer().get()).find()))) {
 				continue;
 			}
 			permissionList.getItems().add(permission);

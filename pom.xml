@@ -54,7 +54,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>nl.makertim.luckpermsui.UIMain</mainClass>
+                            <mainClass>me.lucko.luckperms.LPStandaloneApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

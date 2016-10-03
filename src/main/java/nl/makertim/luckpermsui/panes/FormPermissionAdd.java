@@ -1,6 +1,6 @@
 package nl.makertim.luckpermsui.panes;
 
-import nl.makertim.luckpermsui.internal.Group;
+import me.lucko.luckperms.groups.Group;
 
 public class FormPermissionAdd extends FormPermissionChange {
 

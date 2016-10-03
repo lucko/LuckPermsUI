@@ -4,11 +4,11 @@ import java.util.Arrays;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.groups.Group;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormItem;
 import nl.makertim.luckpermsui.form.FormResultType;
-import nl.makertim.luckpermsui.internal.Group;
-import nl.makertim.luckpermsui.internal.Permission;
 
 public class FormPermissionChange extends FormBase {
 
@@ -21,8 +21,8 @@ public class FormPermissionChange extends FormBase {
 				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
 	}
 
-	public FormPermissionChange(ViewManager view, Group group, Permission perms) {
-		this(view, group, perms.getNode(), perms.getServer(), perms.getWorld(), perms.isActive());
+	public FormPermissionChange(ViewManager view, Group group, Node perms) {
+		this(view, group, perms.getPermission(), perms.getServer().get(), perms.getWorld().get(), perms.getValue());
 	}
 
 	public static CheckBox preDoneCheckbox(boolean selected) {

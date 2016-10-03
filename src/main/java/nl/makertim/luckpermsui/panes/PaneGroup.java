@@ -14,12 +14,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import me.lucko.luckperms.groups.Group;
 import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.elements.TexturedButton;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
-import nl.makertim.luckpermsui.internal.Group;
-import nl.makertim.luckpermsui.internal.GroupManager;
 
 public class PaneGroup extends VBox {
 
@@ -69,7 +68,7 @@ public class PaneGroup extends VBox {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] result = fr.getResult();
 				if (result[0].equals(group.getName())) {
-					GroupManager.removeGroup(group);
+					// TODO delete
 					fillGroups();
 					parent.setSideView(null);
 				} else {
@@ -85,8 +84,7 @@ public class PaneGroup extends VBox {
 			if (fr.getType() == FormResultType.OK) {
 				Object[] result = fr.getResult();
 				String name = (String) result[0];
-				Group group = GroupManager.createGroup(name);
-				GroupManager.addGroup(group);
+				// todo create & add
 				fillGroups();
 			}
 		});
@@ -101,7 +99,7 @@ public class PaneGroup extends VBox {
 		TableColumn count = new TableColumn("Users in group");
 		count.setCellValueFactory(cvf -> {
 			TableColumn.CellDataFeatures cdf = (TableColumn.CellDataFeatures) cvf;
-			ObservableValue ret = new SimpleIntegerProperty(GroupManager.countUsersInGroup((Group) cdf.getValue()));
+			ObservableValue ret = new SimpleIntegerProperty(1); // TODO GroupManager.countUsersInGroup((Group) cdf.getValue())
 			return ret;
 		});
 
@@ -111,7 +109,7 @@ public class PaneGroup extends VBox {
 	private void fillGroups() {
 		groups.getItems().clear();
 		parent.setSideView(null);
-		List<Group> groups = GroupManager.getGroups(search.getText());
+		List<Group> groups = null; // TODO
 		this.groups.getItems().addAll(groups);
 	}
 
