@@ -1,12 +1,19 @@
 package nl.makertim.luckpermsui;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum DatabaseType {
 
-	MYSQL("mysql"), SQLITE("sqlite"), H2("h2"), FLATFILE("flatfile"), MONGODB("mongodb");
+	MYSQL("mysql"),
+	SQLITE("sqlite"),
+	H2("h2"),
+	JSON("json"),
+	YAML("yaml"),
+	MONGODB("mongodb");
 
-	public String type;
+	public final String type;
 
-	DatabaseType(String type) {
-		this.type = type;
-	}
 }

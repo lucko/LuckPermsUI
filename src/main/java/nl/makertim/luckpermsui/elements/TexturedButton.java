@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import nl.makertim.luckpermsui.MainWindow;
+import me.lucko.luckperms.LPStandaloneApp;
 
 public class TexturedButton extends ImageView {
 
@@ -31,7 +31,7 @@ public class TexturedButton extends ImageView {
 
 	public void addTooltip(String tooltipMessage) {
 		Tooltip tooltip = new Tooltip(tooltipMessage);
-		tooltip.setFont(MainWindow.FONT);
+		tooltip.setFont(LPStandaloneApp.FONT);
 		Tooltip.install(this, tooltip);
 	}
 

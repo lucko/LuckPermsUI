@@ -2,11 +2,11 @@ package nl.makertim.luckpermsui.panes;
 
 import java.util.Arrays;
 
+import me.lucko.luckperms.groups.Group;
 import nl.makertim.luckpermsui.elements.LuckPermTextField;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormItem;
 import nl.makertim.luckpermsui.form.FormResultType;
-import nl.makertim.luckpermsui.internal.Group;
 
 public class FormGroupDelete extends FormBase {
 

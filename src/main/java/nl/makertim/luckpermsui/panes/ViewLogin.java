@@ -7,16 +7,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import me.lucko.luckperms.LPStandaloneApp;
 import nl.makertim.luckpermsui.DatabaseType;
-import nl.makertim.luckpermsui.Main;
-import nl.makertim.luckpermsui.MainWindow;
+import nl.makertim.luckpermsui.StorageOptions;
 import nl.makertim.luckpermsui.elements.LuckPermLabel;
 import nl.makertim.luckpermsui.elements.LuckPermTextField;
-import nl.makertim.luckpermsui.util.MySQLDatabaseManager;
 
 public class ViewLogin extends StackPane {
+    private final LPStandaloneApp app;
 
-	public ViewLogin() {
+	public ViewLogin(LPStandaloneApp app) {
+        this.app = app;
 		setup();
 	}
 
@@ -60,10 +61,33 @@ public class ViewLogin extends StackPane {
 		GridPane.setConstraints(passwordLabel, 1, row);
 		GridPane.setConstraints(passwordField, 2, row++);
 
+        // TODO Add different options for Flatfile / Mongo / H2 / SQLite
+        // TODO Perhaps dynamically change the buttons here depending on which 'Database type' is chosen?
+
 		Button loginButton = new Button("Login");
-		loginButton.setOnAction((ActionEvent click) -> onConnect(databaseTypeField.getValue(),
-			databaseHostField.getText(), databasePortField.getText(), databaseField.getText(), usernameField.getText(),
-			passwordField.getText()));
+		loginButton.setOnAction((ActionEvent click) -> {
+            DatabaseType type = databaseTypeField.getValue();
+            if (type == DatabaseType.MYSQL) {
+                int port = 0;
+                try {
+                    port = Integer.parseInt(databasePortField.getText());
+                } catch (NumberFormatException e) {
+                    System.err.println(databasePortField.getText() + " is not a number.");
+                }
+
+                setupBase(new StorageOptions(
+                        "mysql",
+                        databaseHostField.getText() + ":" + port,
+                        databaseField.getText(),
+                        usernameField.getText(),
+                        passwordField.getText(),
+                        null)
+                );
+            } else {
+                // TODO Add other types
+            }
+        });
+
 		databaseTypeField.valueProperty().addListener(change -> {
 			DatabaseType selected = databaseTypeField.getValue();
 			if (selected == DatabaseType.MYSQL || selected == DatabaseType.MONGODB) {
@@ -82,41 +106,22 @@ public class ViewLogin extends StackPane {
 				passwordField.setDisable(true);
 			}
 		});
+
 		GridPane.setConstraints(loginButton, 2, row);
 
 		grid.getChildren().addAll(databaseTypeLabel, databaseTypeField, databaseHostLabel, databaseHostField,
 			databasePortLabel, databasePortField, databaseLabel, databaseField, usernameLabel, usernameField,
 			passwordLabel, passwordField, loginButton);
+
 		this.getChildren().add(grid);
 	}
 
-	private void onConnect(DatabaseType type, String host, String _port, String database, String username, String password) {
-		int port = 0;
+	private void setupBase(StorageOptions options) {
+        app.setupBase(options);
+
 		try {
-			port = Integer.parseInt(_port);
-		} catch (NumberFormatException e) {
-			System.err.println(_port + " is not a number.");
-		}
-		switch (type) {
-		case MYSQL:
-			Main.manager = new MySQLDatabaseManager(host, port, username, password, database);
-			break;
-		case SQLITE:
-			// TODO: remove debug
-			Main.manager = new MySQLDatabaseManager("localhost", 3306, "stream", "", "test");
-			break;
-		case H2:
-			break;
-		case FLATFILE:
-			break;
-		case MONGODB:
-			break;
-		}
-		try {
-			if (!Main.manager.openConnection()) {
-				return;
-			}
-			Stage stage = MainWindow.getView().getPrimaryStage();
+
+			Stage stage = app.getPrimaryStage();
 			stage.setScene(new Scene(new ViewManager(), 1024, 768));
 			stage.setMinWidth(1000);
 			stage.setMinHeight(768);
