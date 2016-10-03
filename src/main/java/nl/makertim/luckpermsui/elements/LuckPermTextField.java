@@ -1,7 +1,6 @@
 package nl.makertim.luckpermsui.elements;
 
 import javafx.scene.control.TextField;
-import nl.makertim.luckpermsui.MainWindow;
 
 public class LuckPermTextField extends TextField {
 

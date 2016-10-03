@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import nl.makertim.luckpermsui.MainWindow;
 
 public class TexturedButton extends ImageView {
 

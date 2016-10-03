@@ -8,22 +8,17 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.StringConverter;
-import nl.makertim.luckpermsui.MainWindow;
 import nl.makertim.luckpermsui.elements.*;
 import nl.makertim.luckpermsui.form.FormBase;
 import nl.makertim.luckpermsui.form.FormResultType;
 import nl.makertim.luckpermsui.internal.Group;
 import nl.makertim.luckpermsui.internal.GroupManager;
 import nl.makertim.luckpermsui.internal.Permission;
-import nl.makertim.luckpermsui.internal.User;
 import nl.makertim.luckpermsui.util.ColoredLine;
 
 public class SidePaneGroup extends VBox {

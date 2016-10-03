@@ -7,17 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import nl.makertim.luckpermsui.Main;
-
 public class UserManager {
 
-	private static final PreparedStatement UPDATE_USR = Main.manager
+	private static final PreparedStatement UPDATE_USR = UIMain.manager
 			.prepare("UPDATE lp_users SET name = ?, primary_group = ?, perms = ? WHERE uuid = ?;");
 
 	public static List<User> getUsers(String filter) {
-		filter = Main.manager.prepareString(filter);
+		filter = UIMain.manager.prepareString(filter);
 		List<User> users = new ArrayList<>();
-		ResultSet rs = Main.manager
+		ResultSet rs = UIMain.manager
 				.selectQuery("SELECT * FROM lp_users WHERE name LIKE '%" + filter + "%' ORDER BY name;");
 		try {
 			while (rs.next()) {
@@ -41,7 +39,7 @@ public class UserManager {
 				UPDATE_USR.setString(2, user.getDefaultGroup());
 				UPDATE_USR.setString(3, user.getJson());
 				UPDATE_USR.setString(4, user.getUuid().toString());
-				Main.manager.updatePrepared(UPDATE_USR);
+				UIMain.manager.updatePrepared(UPDATE_USR);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
