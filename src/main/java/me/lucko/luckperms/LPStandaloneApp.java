@@ -2,12 +2,12 @@ package me.lucko.luckperms;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
 import me.lucko.luckperms.standalone.StandaloneBase;
-import me.lucko.luckperms.standalone.controller.LoginController;
-import me.lucko.luckperms.standalone.view.scene.Login;
+import me.lucko.luckperms.standalone.factory.LoginFactory;
 
 public class LPStandaloneApp extends Application {
 	public static final Font FONT;
@@ -30,8 +30,7 @@ public class LPStandaloneApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 
-		LoginController controller = new LoginController(this);
-		Login login = new Login(controller);
+		Pane login = LoginFactory.getInstance().create(primaryStage);
 
 		Scene startScene = new Scene(login);
 		primaryStage.setTitle("LuckPerms User Interface\u2122");

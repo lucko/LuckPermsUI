@@ -1,22 +1,22 @@
 package me.lucko.luckperms.standalone.controller;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
-import me.lucko.luckperms.LPStandaloneApp;
 import me.lucko.luckperms.standalone.StandaloneBase;
+import me.lucko.luckperms.standalone.factory.ManagerFactory;
 import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.standalone.view.scene.Manager;
 import me.lucko.luckperms.storage.Datastore;
 import me.lucko.luckperms.storage.methods.*;
 
 public class LoginController {
 
 	@Getter
-	private LPStandaloneApp app;
+	private Stage stage;
 
-	public LoginController(LPStandaloneApp app) {
-		this.app = app;
+	public LoginController(Stage stage) {
+		this.stage = stage;
 	}
 
 	public void startupManageView(StorageOptions options) {
@@ -43,10 +43,11 @@ public class LoginController {
 			break;
 		}
 		base.loadDatastore(datastore);
+		datastore.init();
 
 		try {
-			Stage stage = app.getPrimaryStage();
-			stage.setScene(new Scene(new Manager(), 1024, 768));
+			Pane view = ManagerFactory.getInstance().create(base);
+			stage.setScene(new Scene(view, 1024, 768));
 			stage.setMinWidth(1000);
 			stage.setMinHeight(768);
 			stage.setMaxHeight(768);

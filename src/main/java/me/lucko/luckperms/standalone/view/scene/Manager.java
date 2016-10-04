@@ -10,10 +10,15 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import lombok.Setter;
+import me.lucko.luckperms.standalone.controller.ManagerController;
 import me.lucko.luckperms.standalone.view.centerpane.GroupManager;
 import me.lucko.luckperms.standalone.view.centerpane.UserManager;
 
 public class Manager extends StackPane {
+
+	@Setter
+	private ManagerController controller;
 
 	BorderPane mainLayer;
 	VBox menu;
@@ -31,7 +36,7 @@ public class Manager extends StackPane {
 		getChildren().addAll(mainLayer, overlay);
 		widthProperty().addListener(resize -> onResize());
 		heightProperty().addListener(resize -> onResize());
-		Platform.runLater(() -> onResize());
+		Platform.runLater(this::onResize);
 	}
 
 	private void setup() {
