@@ -3,6 +3,7 @@ package me.lucko.luckperms.standalone.util.form;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import me.lucko.luckperms.standalone.util.StringUtil;
-import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
+import me.lucko.luckperms.standalone.view.elements.RaisedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class FormBase extends BorderPane {
@@ -31,14 +32,14 @@ public class FormBase extends BorderPane {
 		content.setHgap(8);
 		content.setAlignment(Pos.CENTER_LEFT);
 
-		Label label = new LuckPermLabel(name);
+		Label label = new Label(name);
 		GridPane.setConstraints(label, 0, 0);
 		content.getChildren().add(label);
 
 		controls = new Control[items.size()];
 		for (int i = 0; i < items.size(); i++) {
 			FormItem item = items.get(i);
-			Label controlName = new LuckPermLabel(item.getName());
+			Label controlName = new Label(item.getName());
 			controls[i] = item.getItem();
 			GridPane.setConstraints(controlName, 0, i + 1);
 			GridPane.setConstraints(controls[i], 1, i + 1);
@@ -48,7 +49,7 @@ public class FormBase extends BorderPane {
 
 		HBox buttonRow = new HBox(8);
 		for (FormResultType type : buttons) {
-			Button button = new Button(StringUtil.readableEnum(type));
+			Button button = new RaisedButton(StringUtil.readableEnum(type));
 			button.setOnAction(click -> {
 				result = type;
 				view.setOverlay(null);

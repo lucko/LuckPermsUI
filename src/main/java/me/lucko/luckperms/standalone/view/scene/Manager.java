@@ -10,16 +10,22 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
-import me.lucko.luckperms.standalone.view.centerpane.GroupManager;
+import lombok.Getter;
+import me.lucko.luckperms.standalone.controller.ManagerController;
+import me.lucko.luckperms.standalone.view.centerpane.GroupListManager;
 import me.lucko.luckperms.standalone.view.centerpane.UserManager;
+import me.lucko.luckperms.standalone.view.elements.RaisedButton;
 
 public class Manager extends StackPane {
 
-	BorderPane mainLayer;
-	VBox menu;
-	Pane mainView;
-	Pane sideView;
-	StackPane overlay;
+	private BorderPane mainLayer;
+	private VBox menu;
+	private Pane mainView;
+	private Pane sideView;
+	private StackPane overlay;
+
+	@Getter
+	private ManagerController controller;
 
 	public Manager() {
 		mainLayer = new BorderPane();
@@ -34,18 +40,22 @@ public class Manager extends StackPane {
 		Platform.runLater(() -> onResize());
 	}
 
+	public void registerController(ManagerController controller) {
+		this.controller = controller;
+	}
+
 	private void setup() {
 		menu = new VBox(10);
-		menu.setPadding(new Insets(0, 4, 0, 0));
+		menu.setPadding(new Insets(0, 4, 0, 4));
 		menu.setMinWidth(90);
 		mainView = new StackPane();
 		sideView = new StackPane();
 		sideView.setMinWidth(100);
 
-		Button groupButton = new Button("Groups");
-		Button userButton = new Button("User manager");
+		Button groupButton = new RaisedButton("Groups");
+		Button userButton = new RaisedButton("User manager");
 
-		groupButton.setOnAction(action -> setMainView(new GroupManager(this)));
+		groupButton.setOnAction(action -> setMainView(new GroupListManager(this)));
 		userButton.setOnAction(action -> setMainView(new UserManager(this)));
 
 		menu.getChildren().addAll(groupButton, userButton);

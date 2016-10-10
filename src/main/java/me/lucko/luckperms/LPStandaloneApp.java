@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.controller.LoginController;
+import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.view.scene.Login;
 
 public class LPStandaloneApp extends Application {
@@ -30,13 +31,15 @@ public class LPStandaloneApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 
-		LoginController controller = new LoginController(this);
-		Login login = new Login(controller);
-
-		Scene startScene = new Scene(login);
+		SimpleViewFactory.getInstance().openLogin(this);
 		primaryStage.setTitle("LuckPerms User Interface\u2122");
-		primaryStage.setScene(startScene);
 		primaryStage.show();
+	}
+
+	public void setPrimaryScene(Scene scene) {
+		scene.getStylesheets().add(getClass().getResource("/assets/style.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/resources/css/jfoenix-design.css").toExternalForm());
+		primaryStage.setScene(scene);
 	}
 
 	public void stop() {

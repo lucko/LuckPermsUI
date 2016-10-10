@@ -2,6 +2,10 @@ package me.lucko.luckperms.standalone.view.scene;
 
 import java.io.File;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,8 +18,7 @@ import me.lucko.luckperms.DatabaseType;
 import me.lucko.luckperms.api.data.Callback;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
-import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
+import me.lucko.luckperms.standalone.view.elements.RaisedButton;
 
 public class Login extends VBox {
 
@@ -35,12 +38,12 @@ public class Login extends VBox {
 
 		HBox row = new HBox(8);
 		row.setAlignment(Pos.CENTER);
-		Label databaseTypeLabel = new LuckPermLabel("Database type");
-		ComboBox<DatabaseType> databaseTypeField = new ComboBox<>();
+		Label databaseTypeLabel = new Label("Database type");
+		ComboBox<DatabaseType> databaseTypeField = new JFXComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
 		row.getChildren().addAll(databaseTypeLabel, databaseTypeField);
 
-		Button loginButton = new Button("Login");
+		Button loginButton = new RaisedButton("Login");
 		loginButton.setOnAction((ActionEvent click) -> {
 			StorageOptions options = form.onConfirm();
 			controller.startupManageView(options);
@@ -137,13 +140,13 @@ public class Login extends VBox {
 		@Override
 		public void build(GridPane pane) {
 			int row = 0;
-			Label fileLocationLabel = new LuckPermLabel("Location");
-			fileLocation = new LuckPermTextField();
+			Label fileLocationLabel = new Label("Location");
+			fileLocation = new JFXTextField();
 			fileLocation.setPromptText("path/to/file");
 			GridPane.setConstraints(fileLocationLabel, 1, ++row);
 			GridPane.setConstraints(fileLocation, 2, row);
 
-			Button buttonBrowse = new Button("Browse...");
+			Button buttonBrowse = new RaisedButton("Browse...");
 			buttonBrowse.setOnMouseClicked(click -> {
 				chooseFile(newFile -> fileLocationLabel.setText(newFile.getAbsolutePath()));
 			});
@@ -179,31 +182,31 @@ public class Login extends VBox {
 		@Override
 		public void build(GridPane pane) {
 			int row = 0;
-			Label databaseHostLabel = new LuckPermLabel("Host");
-			databaseHostField = new LuckPermTextField();
+			Label databaseHostLabel = new Label("Host");
+			databaseHostField = new JFXTextField();
 			databaseHostField.setPromptText("example.com");
 			GridPane.setConstraints(databaseHostLabel, 1, ++row);
 			GridPane.setConstraints(databaseHostField, 2, row);
 
-			Label databasePortLabel = new LuckPermLabel("Port");
-			databasePortField = new LuckPermTextField();
+			Label databasePortLabel = new Label("Port");
+			databasePortField = new JFXTextField();
 			databasePortField.setPromptText("3306");
 			GridPane.setConstraints(databasePortLabel, 1, ++row);
 			GridPane.setConstraints(databasePortField, 2, row);
 
-			Label databaseLabel = new LuckPermLabel("Database");
-			databaseField = new LuckPermTextField();
+			Label databaseLabel = new Label("Database");
+			databaseField = new JFXTextField();
 			GridPane.setConstraints(databaseLabel, 1, ++row);
 			GridPane.setConstraints(databaseField, 2, row);
 
-			Label usernameLabel = new LuckPermLabel("Username");
-			usernameField = new LuckPermTextField();
+			Label usernameLabel = new Label("Username");
+			usernameField = new JFXTextField();
 			usernameField.setPromptText("My Awesome Username");
 			GridPane.setConstraints(usernameLabel, 1, ++row);
 			GridPane.setConstraints(usernameField, 2, row);
 
-			Label passwordLabel = new LuckPermLabel("Password");
-			passwordField = new PasswordField();
+			Label passwordLabel = new Label("Password");
+			passwordField = new JFXPasswordField();
 			passwordField.setPromptText("My Secret Password");
 			GridPane.setConstraints(passwordLabel, 1, ++row);
 			GridPane.setConstraints(passwordField, 2, row);

@@ -4,6 +4,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import com.jfoenix.controls.JFXTextField;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -21,9 +23,7 @@ import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
 import me.lucko.luckperms.exceptions.ObjectLacksException;
 import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.standalone.util.ColoredLine;
-import me.lucko.luckperms.standalone.util.elements.LuckPermLabel;
-import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
-import me.lucko.luckperms.standalone.util.elements.TexturedButton;
+import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
 import me.lucko.luckperms.standalone.view.popup.PermissionAdd;
@@ -50,7 +50,7 @@ public class SideGroup extends VBox {
 	private void setup() {
 		BorderPane topLine = new BorderPane();
 		HBox topRightCorner = new HBox();
-		Label nameLabel = new LuckPermLabel(String.format("Permissions of %s.", group.getName()));
+		Label nameLabel = new Label(String.format("Permissions of %s.", group.getName()));
 		nameLabel.setPadding(new Insets(4, 0, 0, 0));
 		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24,
 				String.format("Add a permission to the group %s.", group.getName()));
@@ -59,11 +59,11 @@ public class SideGroup extends VBox {
 				String.format("Remove selected permission.", group.getName()));
 
 		HBox searchers = new HBox();
-		searchServer = new LuckPermTextField();
+		searchServer = new JFXTextField();
 		searchServer.setPromptText("Search filter server.");
-		searchWorld = new LuckPermTextField();
+		searchWorld = new JFXTextField();
 		searchWorld.setPromptText("Search filter world.");
-		searchNode = new LuckPermTextField();
+		searchNode = new JFXTextField();
 		searchNode.setPromptText("Search filter node.");
 
 		VBox groupInfo = new VBox(1);
@@ -77,9 +77,9 @@ public class SideGroup extends VBox {
 		}
 
 		if (group.getGroupNames().size() > 0) {
-			groupInfo.getChildren().add(new LuckPermLabel("Inherits from:"));
+			groupInfo.getChildren().add(new Label("Inherits from:"));
 			for (String parentGroup : group.getGroupNames()) {
-				groupInfo.getChildren().add(new LuckPermLabel("  " + parentGroup));
+				groupInfo.getChildren().add(new Label("  " + parentGroup));
 			}
 		}
 
@@ -164,7 +164,7 @@ public class SideGroup extends VBox {
 				/*
 				 * Permission perm = new Permission(server, world, node,
 				 * active); group.setPermission(perm);
-				 * GroupManager.updatePermissions(group);
+				 * GroupListManager.updatePermissions(group);
 				 */
 				// TODO
 				fillPermissionList();

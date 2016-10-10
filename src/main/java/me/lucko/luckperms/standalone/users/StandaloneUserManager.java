@@ -15,8 +15,6 @@ public class StandaloneUserManager extends UserManager {
 
 	@Override
 	public void cleanup(User user) {
-		// unload(user);
-		// never unload????? TODO
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package me.lucko.luckperms.standalone.view.centerpane;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -11,8 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import me.lucko.luckperms.standalone.util.UsernameGetter;
-import me.lucko.luckperms.standalone.util.elements.LuckPermTextField;
-import me.lucko.luckperms.standalone.util.elements.TexturedButton;
+import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
 import me.lucko.luckperms.standalone.view.popup.UserNew;
@@ -32,7 +32,7 @@ public class UserManager extends BorderPane {
 
 	private void setup() {
 		HBox topLane = new HBox();
-		nameSearcher = new LuckPermTextField();
+		nameSearcher = new JFXTextField();
 		nameSearcher.setPrefWidth(Short.MAX_VALUE);
 		nameSearcher.setPromptText("Name filter.");
 		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24, "Force add a user.");

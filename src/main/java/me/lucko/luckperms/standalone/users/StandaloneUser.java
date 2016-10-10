@@ -3,6 +3,7 @@ package me.lucko.luckperms.standalone.users;
 import java.util.UUID;
 
 import me.lucko.luckperms.LuckPermsPlugin;
+import me.lucko.luckperms.standalone.util.MojangAPI;
 import me.lucko.luckperms.users.User;
 
 public class StandaloneUser extends User {

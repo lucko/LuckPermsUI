@@ -1,4 +1,4 @@
-package me.lucko.luckperms.standalone.util.elements;
+package me.lucko.luckperms.standalone.view.elements;
 
 import java.util.ArrayList;
 import java.util.Collection;
