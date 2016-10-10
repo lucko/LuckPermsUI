@@ -76,8 +76,7 @@ public class StandaloneBase implements LuckPermsPlugin {
 				try {
 					datastore.loadUser(user, datastore.getName(user));
 				} catch (Exception ex) {
-					// TODO: System.err.println("Loading user error: " + ex +
-					// "\t by UUID " + user);
+					System.err.println("Loading user error: " + ex + "\t by UUID " + user);
 				}
 			});
 		}).start();

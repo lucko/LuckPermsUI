@@ -3,11 +3,14 @@ package me.lucko.luckperms.standalone.factory;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import me.lucko.luckperms.LPStandaloneApp;
+import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.standalone.StandaloneBase;
+import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.controller.ManagerController;
 import me.lucko.luckperms.standalone.view.scene.Login;
 import me.lucko.luckperms.standalone.view.scene.Manager;
+import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
 public class SimpleViewFactory {
 
@@ -39,5 +42,12 @@ public class SimpleViewFactory {
         Login login = new Login(controller);
         app.setPrimaryScene(new Scene(login));
         stage.setResizable(false);
+	}
+
+	public SideGroup linkGroup(Group group, Manager parent, StandaloneBase base) {
+		SideGroup view = new SideGroup(parent, group);
+		GroupController controller = new GroupController(view, base);
+		view.registerController(controller);
+		return view;
     }
 }

@@ -17,7 +17,7 @@ public class LoginController {
 
 	public void startupManageView(StorageOptions options) {
 		StandaloneBase base = new StandaloneBase(options);
-		Datastore datastore = null;
+		Datastore datastore;
 		switch (options.getType()) {
 		case MYSQL:
 			datastore = new MySQLDatastore(base, options);
@@ -37,10 +37,13 @@ public class LoginController {
 		case MONGODB:
 			datastore = new MongoDBDatastore(base, options);
 			break;
+		default:
+			datastore = null;
 		}
-		base.loadDatastore(datastore);
-
-		SimpleViewFactory.getInstance().openManager(app, base);
+		base.doAsync(() -> {
+			base.loadDatastore(datastore);
+			base.doSync(() -> SimpleViewFactory.getInstance().openManager(app, base));
+		});
 	}
 
 }

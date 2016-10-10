@@ -16,9 +16,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.groups.GroupManager;
+import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.view.elements.GroupTreeObject;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
+import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
 public class GroupListManager extends VBox {
 
@@ -47,9 +49,19 @@ public class GroupListManager extends VBox {
 		fillGroupView(search.getText());
 
 		search.textProperty().addListener(change -> fillGroupView(search.getText()));
+		groupList.getSelectionModel().selectedIndexProperty().addListener(change -> updateSelected());
 
 		topLine.getChildren().addAll(search, addButton, refreshButton, removeButton);
 		getChildren().addAll(topLine, groupList);
+	}
+
+	private void updateSelected() {
+		Group group = fromItem(groupList.getSelectionModel().getSelectedItem());
+		if (group == null) {
+			parent.setSideView(null);
+			return;
+		}
+		parent.setSideView(SimpleViewFactory.getInstance().linkGroup(group, parent, parent.getController().getBase()));
 	}
 
 	private void setupGroupView() {
@@ -58,15 +70,7 @@ public class GroupListManager extends VBox {
 		TreeTableColumn<GroupTreeObject, String> nameColumn = new JFXTreeTableColumn<>("Name");
 		nameColumn.setPrefWidth(150);
 		nameColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<GroupTreeObject, String> param) -> {
-			TreeItem<GroupTreeObject> item = param.getValue();
-			if (item == null) {
-				return new SimpleStringProperty();
-			}
-			GroupTreeObject gto = item.getValue();
-			if (gto == null) {
-				return new SimpleStringProperty();
-			}
-			Group group = gto.getGroup();
+			Group group = fromItem(param.getValue());
 			if (group == null) {
 				return new SimpleStringProperty();
 			}
@@ -77,20 +81,34 @@ public class GroupListManager extends VBox {
 		treeItem.setExpanded(true);
 		groupList.setRoot(treeItem);
 		groupList.setShowRoot(false);
+		groupList.setPrefHeight(Short.MAX_VALUE);
 	}
 
 	private void fillGroupView(String filter) {
 		Map<String, Group> groups = groupManager.getAll();
 		groupList.getRoot().getChildren().clear();
 		groups.values().stream().filter(group -> {
+			String filterLower = filter.toLowerCase();
 			Pattern pattern = Pattern.compile(".+");
 			try {
-				pattern = Pattern.compile(filter);
+				pattern = Pattern.compile(filterLower);
 			} catch (Exception ex) {
 			}
-			String groupName = group.getDisplayName();
-			return filter.isEmpty() || pattern.matcher(groupName).find() || groupName.contains(filter);
+			String groupName = group.getDisplayName().toLowerCase();
+			return filterLower.isEmpty() || pattern.matcher(groupName).find() || groupName.contains(filterLower);
 		}).forEach(group -> groupList.getRoot().getChildren().add(new TreeItem<>(new GroupTreeObject(group))));
+	}
+
+	private Group fromItem(TreeItem<GroupTreeObject> treeItem) {
+		TreeItem<GroupTreeObject> item = treeItem;
+		if (item == null) {
+			return null;
+		}
+		GroupTreeObject gto = item.getValue();
+		if (gto == null) {
+			return null;
+		}
+		return gto.getGroup();
 	}
 
 }
