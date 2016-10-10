@@ -1,6 +1,5 @@
 package me.lucko.luckperms.standalone.view.sidepane;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -18,17 +17,11 @@ import me.lucko.luckperms.LPStandaloneApp;
 import me.lucko.luckperms.api.MetaUtils;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.implementation.internal.GroupLink;
-import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
-import me.lucko.luckperms.exceptions.ObjectLacksException;
 import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.util.ColoredLine;
-import me.lucko.luckperms.standalone.util.form.FormBase;
-import me.lucko.luckperms.standalone.util.form.FormResultType;
+import me.lucko.luckperms.standalone.util.OptionalPropertyValueFactory;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
-import me.lucko.luckperms.standalone.view.popup.PermissionAdd;
-import me.lucko.luckperms.standalone.view.popup.PermissionChange;
-import me.lucko.luckperms.standalone.view.popup.PermissionRemove;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class SideGroup extends VBox {
@@ -72,10 +65,12 @@ public class SideGroup extends VBox {
         groupInfo.setPadding(new Insets(3, 0, 3, 3));
 
         String prefix = MetaUtils.getPrefix(new GroupLink(group), null, null, true);
-        if (prefix != null) {
+        if (prefix != null && !prefix.isEmpty()) {
             ColoredLine prefixLine = new ColoredLine("Prefix = " + prefix);
             prefixLine.setFont(LPStandaloneApp.FONT);
             groupInfo.getChildren().add(prefixLine);
+        } else {
+            groupInfo.getChildren().add(new Label("No prefix"));
         }
 
         if (group.getGroupNames().size() > 0) {
@@ -83,6 +78,8 @@ public class SideGroup extends VBox {
             for (String parentGroup : group.getGroupNames()) {
                 groupInfo.getChildren().add(new Label("  " + parentGroup));
             }
+        } else {
+            groupInfo.getChildren().add(new Label("No inherited groups"));
         }
 
         setupTable();
@@ -120,19 +117,19 @@ public class SideGroup extends VBox {
         });
 
         TableColumn node = new TableColumn("Node");
-        node.setCellValueFactory(new PropertyValueFactory<Node, UUID>("node"));
+        node.setCellValueFactory(new PropertyValueFactory<>("permission"));
         TableColumn server = new TableColumn("Server");
-        server.setCellValueFactory(new PropertyValueFactory<Node, UUID>("server"));
+        server.setCellValueFactory(new OptionalPropertyValueFactory<>("server"));
         TableColumn world = new TableColumn("World");
-        world.setCellValueFactory(new PropertyValueFactory<Node, UUID>("world"));
+        world.setCellValueFactory(new OptionalPropertyValueFactory<>("world"));
         TableColumn active = new TableColumn("Allowed");
-        active.setCellValueFactory(new PropertyValueFactory<Node, UUID>("active"));
+        active.setCellValueFactory(new PropertyValueFactory<>("active"));
 
         permissionList.getColumns().addAll(node, server, world, active);
 
         fillPermissionList();
         permissionList.setPrefWidth(250);
-        permissionList.setPrefHeight(687);
+        permissionList.setPrefHeight(Short.MAX_VALUE);
     }
 
     private void onPermissionAdd() {
