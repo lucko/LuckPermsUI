@@ -23,7 +23,8 @@ public class PermissionChange extends FormBase {
 	}
 
 	public PermissionChange(Manager view, Group group, Node perms) {
-		this(view, group, perms.getPermission(), perms.getServer().get(), perms.getWorld().get(), perms.getValue());
+		this(view, group, perms.getPermission(), perms.getServer().orElse(null), perms.getWorld().orElse(null),
+				perms.getValue());
 	}
 
 	public static CheckBox preDoneCheckbox(boolean selected) {
