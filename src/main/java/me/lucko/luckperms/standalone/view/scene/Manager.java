@@ -37,7 +37,7 @@ public class Manager extends StackPane {
 		getChildren().addAll(mainLayer, overlay);
 		widthProperty().addListener(resize -> onResize());
 		heightProperty().addListener(resize -> onResize());
-		Platform.runLater(() -> onResize());
+		Platform.runLater(this::onResize);
 	}
 
 	public void registerController(ManagerController controller) {

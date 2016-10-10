@@ -135,6 +135,7 @@ public class Login extends VBox {
 	}
 
 	public abstract class FileForm implements DatabaseForm {
+		private File file;
 		private TextField fileLocation;
 
 		@Override
@@ -148,7 +149,7 @@ public class Login extends VBox {
 
 			Button buttonBrowse = new RaisedButton("Browse...");
 			buttonBrowse.setOnMouseClicked(click -> {
-				chooseFile(newFile -> fileLocationLabel.setText(newFile.getAbsolutePath()));
+				chooseFile(newFile -> fileLocation.setText(newFile.getAbsolutePath()));
 			});
 			GridPane.setConstraints(buttonBrowse, 1, ++row, 2, 1);
 
@@ -157,7 +158,7 @@ public class Login extends VBox {
 
 		@Override
 		public StorageOptions onConfirm() {
-			return new StorageOptions(getType(), fileLocation.getText(), null, null, null);
+			return new StorageOptions(getType(), file);
 		}
 
 		private void chooseFile(Callback<File> fileCallback) {
@@ -165,6 +166,7 @@ public class Login extends VBox {
 			fileChooser.setTitle("Choose database file for type '" + getType().getType() + "'.");
 			File file = fileChooser.showOpenDialog(Login.this.getScene().getWindow());
 			if (file != null) {
+				this.file = file;
 				fileCallback.onComplete(file);
 			}
 		}
