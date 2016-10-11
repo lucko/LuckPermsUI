@@ -1,6 +1,5 @@
 package me.lucko.luckperms.standalone.view.sidepane;
 
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import com.jfoenix.controls.JFXTextField;
@@ -10,7 +9,6 @@ import com.jfoenix.controls.JFXTreeTableView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -21,11 +19,12 @@ import me.lucko.luckperms.api.implementation.internal.GroupLink;
 import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.util.ColoredLine;
+import me.lucko.luckperms.standalone.util.form.Updatable;
 import me.lucko.luckperms.standalone.view.elements.NodeTreeObject;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 
-public class SideGroup extends VBox {
+public class SideGroup extends VBox implements Updatable {
 
 	private TreeTableView<NodeTreeObject> permissionList;
 	private TextField searchServer;
@@ -66,13 +65,14 @@ public class SideGroup extends VBox {
 		groupInfo = new VBox(1);
 		groupInfo.setPadding(new Insets(3, 0, 3, 3));
 
+		buildGroupInfo();
 		setupTable();
 
-		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onPermissionAdd());
-		changeButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onPermissionChange(
-			fromItem(permissionList.getSelectionModel().getSelectedItem())));
-		removeButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onPermissionRemove(
-			fromItem(permissionList.getSelectionModel().getSelectedItem())));
+		addButton.setOnMouseClicked(click -> onPermissionAdd());
+		changeButton.setOnMouseClicked(
+			click -> onPermissionChange(fromItem(permissionList.getSelectionModel().getSelectedItem())));
+		removeButton.setOnMouseClicked(
+			click -> onPermissionRemove(fromItem(permissionList.getSelectionModel().getSelectedItem())));
 
 		searchServer.textProperty().addListener(onChange -> fillPermissionList());
 		searchWorld.textProperty().addListener(onChange -> fillPermissionList());
@@ -234,7 +234,12 @@ public class SideGroup extends VBox {
 			}
 			permissionList.getRoot().getChildren().add(new TreeItem<>(new NodeTreeObject(permission)));
 		}
+	}
+
+	@Override
+	public void update() {
 		buildGroupInfo();
+		fillPermissionList();
 	}
 
 	public void registerController(GroupController controller) {

@@ -1,20 +1,19 @@
 package me.lucko.luckperms.standalone.view.centerpane;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import com.jfoenix.controls.JFXTextField;
+
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import me.lucko.luckperms.standalone.util.UsernameGetter;
-import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
+import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.popup.UserNew;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 import me.lucko.luckperms.users.User;
@@ -44,11 +43,10 @@ public class UserManager extends BorderPane {
 		filterList();
 
 		nameSearcher.textProperty().addListener(change -> filterList());
-		addButton.setOnMouseClicked((Consumer<MouseEvent>) click -> onUserAdd());
-		updateButton.setOnMouseClicked(
-			(Consumer<MouseEvent>) click -> refreshUsername(userList.getSelectionModel().getSelectedItem()));
-		refreshButton.setOnMouseClicked((Consumer<MouseEvent>) click -> filterList());
-		removeButton.setOnMouseClicked((Consumer<MouseEvent>) click -> {
+		addButton.setOnMouseClicked(click -> onUserAdd());
+		updateButton.setOnMouseClicked(click -> refreshUsername(userList.getSelectionModel().getSelectedItem()));
+		refreshButton.setOnMouseClicked(click -> filterList());
+		removeButton.setOnMouseClicked(click -> {
 		});
 
 		topLane.getChildren().addAll(nameSearcher, addButton, updateButton, refreshButton, removeButton);

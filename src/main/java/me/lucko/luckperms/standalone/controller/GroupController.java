@@ -9,20 +9,54 @@ import me.lucko.luckperms.groups.Group;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
-import me.lucko.luckperms.standalone.view.popup.PermissionAdd;
-import me.lucko.luckperms.standalone.view.popup.PermissionChange;
-import me.lucko.luckperms.standalone.view.popup.PermissionRemove;
+import me.lucko.luckperms.standalone.util.form.Updatable;
+import me.lucko.luckperms.standalone.view.popup.*;
 import me.lucko.luckperms.standalone.view.scene.Manager;
-import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
 @AllArgsConstructor
 public class GroupController {
 
 	@Getter
-	private SideGroup view;
+	private Updatable view;
 
 	@Getter
-	private StandaloneBase model;
+	private StandaloneBase base;
+
+	public void addGroup(Manager parent) {
+		FormBase form = new GroupNew(parent, "");
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.OK) {
+				Object[] values = fr.getResult();
+				String name = (String) values[0];
+				if (name.isEmpty() || base.getDatastore().loadGroup(name)) {
+					return;
+				}
+
+				base.getDatastore().createAndLoadGroup(name);
+				view.update();
+			}
+		});
+	}
+
+	public void removeGroup(Manager parent, Group group) {
+		FormBase form = new GroupDelete(parent, group);
+		form.showForm(fr -> {
+			if (fr.getType() == FormResultType.OK) {
+				Object[] values = fr.getResult();
+				String name = (String) values[0];
+				if (group.getDisplayName().equals(name)) {
+					base.getDatastore().deleteGroup(group);
+					view.update();
+				} else {
+					removeGroup(parent, group);
+				}
+			}
+		});
+	}
+
+	public void refresh(StandaloneBase base) {
+		base.reloadGroups();
+	}
 
 	public void addPermission(Manager parent, Group group) {
 		FormBase form = new PermissionAdd(parent, group);
@@ -45,7 +79,8 @@ public class GroupController {
 				}
 
 				addPermission(group, node, server, world, active);
-				view.fillPermissionList();
+				base.getDatastore().saveGroup(group);
+				view.update();
 			}
 		});
 	}
@@ -69,10 +104,11 @@ public class GroupController {
 				if (world == null || world.isEmpty()) {
 					world = null;
 				}
+
 				removePermission(group, permission);
 				addPermission(group, node, server, world, active);
-				model.getDatastore().saveGroup(group);
-				view.fillPermissionList();
+				base.getDatastore().saveGroup(group);
+				view.update();
 			}
 		});
 	}
@@ -81,11 +117,17 @@ public class GroupController {
 		FormBase form = new PermissionRemove(parent, group, permission);
 		form.showForm(fr -> {
 			if (fr.getType() == FormResultType.YES) {
+
 				removePermission(group, permission);
-				model.getDatastore().saveGroup(group);
-				view.fillPermissionList();
+				base.getDatastore().saveGroup(group);
+				view.update();
 			}
 		});
+	}
+
+	private Group addGroup(String name) {
+		Group newGroup = base.getGroupManager().apply(name);
+		return newGroup;
 	}
 
 	private void removePermission(Group group, Node permission) {

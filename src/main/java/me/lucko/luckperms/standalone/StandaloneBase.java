@@ -68,7 +68,7 @@ public class StandaloneBase implements LuckPermsPlugin {
 	public void loadDatastore(Datastore datastore) {
 		this.datastore = datastore;
 		datastore.init();
-		datastore.loadAllGroups();
+		reloadGroups();
 		datastore.loadAllTracks();
 		doAsync(() -> {
 			Set<UUID> users = datastore.getUniqueUsers();
@@ -80,6 +80,11 @@ public class StandaloneBase implements LuckPermsPlugin {
 				}
 			}));
 		});
+	}
+
+	public void reloadGroups() {
+		groupManager.unloadAll();
+		datastore.loadAllGroups();
 	}
 
 	public void shutdown() {

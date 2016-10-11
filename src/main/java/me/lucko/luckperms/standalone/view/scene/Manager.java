@@ -12,8 +12,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 import me.lucko.luckperms.standalone.controller.ManagerController;
-import me.lucko.luckperms.standalone.view.centerpane.GroupListManager;
-import me.lucko.luckperms.standalone.view.centerpane.UserManager;
+import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.view.elements.RaisedButton;
 
 public class Manager extends StackPane {
@@ -55,8 +54,8 @@ public class Manager extends StackPane {
 		Button groupButton = new RaisedButton("Groups");
 		Button userButton = new RaisedButton("User manager");
 
-		groupButton.setOnAction(action -> setMainView(new GroupListManager(this)));
-		userButton.setOnAction(action -> setMainView(new UserManager(this)));
+		groupButton.setOnAction(action -> SimpleViewFactory.getInstance().openGroup(this));
+		userButton.setOnAction(action -> SimpleViewFactory.getInstance().openUser(this));
 
 		menu.getChildren().addAll(groupButton, userButton);
 		mainLayer.setLeft(menu);

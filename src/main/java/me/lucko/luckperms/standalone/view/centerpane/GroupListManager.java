@@ -15,23 +15,23 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import me.lucko.luckperms.groups.Group;
-import me.lucko.luckperms.groups.GroupManager;
+import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
+import me.lucko.luckperms.standalone.util.form.Updatable;
 import me.lucko.luckperms.standalone.view.elements.GroupTreeObject;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 
-public class GroupListManager extends VBox {
+public class GroupListManager extends VBox implements Updatable {
 
 	private Manager parent;
 	private TextField search;
 	private TreeTableView<GroupTreeObject> groupList;
 
-	private GroupManager groupManager;
+	private GroupController controller;
 
 	public GroupListManager(Manager manager) {
 		parent = manager;
-		groupManager = parent.getController().getBase().getGroupManager();
 		setup();
 	}
 
@@ -45,13 +45,37 @@ public class GroupListManager extends VBox {
 		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24, "Remove selected group.");
 
 		setupGroupView();
-		fillGroupView(search.getText());
+		fillGroupView();
 
-		search.textProperty().addListener(change -> fillGroupView(search.getText()));
+		search.textProperty().addListener(change -> fillGroupView());
+		addButton.setOnMouseClicked(click -> onAddGroup());
+		refreshButton.setOnMouseClicked(click -> onRefresh());
+		removeButton.setOnMouseClicked(click -> onRemoveGroup());
 		groupList.getSelectionModel().selectedIndexProperty().addListener(change -> updateSelected());
 
 		topLine.getChildren().addAll(search, addButton, refreshButton, removeButton);
 		getChildren().addAll(topLine, groupList);
+	}
+
+	public void registerController(GroupController controller) {
+		this.controller = controller;
+	}
+
+	private void onAddGroup() {
+		controller.addGroup(parent);
+	}
+
+	private void onRemoveGroup() {
+		Group group = fromItem(groupList.getSelectionModel().getSelectedItem());
+		if (group == null) {
+			return;
+		}
+		controller.removeGroup(parent, group);
+	}
+
+	private void onRefresh() {
+		controller.getBase().reloadGroups();
+		update();
 	}
 
 	private void updateSelected() {
@@ -83,11 +107,11 @@ public class GroupListManager extends VBox {
 		groupList.setPrefHeight(Short.MAX_VALUE);
 	}
 
-	private void fillGroupView(String filter) {
-		Map<String, Group> groups = groupManager.getAll();
+	private void fillGroupView() {
+		Map<String, Group> groups = parent.getController().getBase().getGroupManager().getAll();
 		groupList.getRoot().getChildren().clear();
 		groups.values().stream().filter(group -> {
-			String filterLower = filter.toLowerCase();
+			String filterLower = search.getText().toLowerCase();
 			Pattern pattern = Pattern.compile(".+");
 			try {
 				pattern = Pattern.compile(filterLower);
@@ -96,6 +120,11 @@ public class GroupListManager extends VBox {
 			String groupName = group.getDisplayName().toLowerCase();
 			return filterLower.isEmpty() || pattern.matcher(groupName).find() || groupName.contains(filterLower);
 		}).forEach(group -> groupList.getRoot().getChildren().add(new TreeItem<>(new GroupTreeObject(group))));
+	}
+
+	@Override
+	public void update() {
+		fillGroupView();
 	}
 
 	private Group fromItem(TreeItem<GroupTreeObject> item) {
