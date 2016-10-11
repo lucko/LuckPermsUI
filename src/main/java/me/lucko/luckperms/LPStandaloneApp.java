@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
@@ -18,6 +19,7 @@ public class LPStandaloneApp extends Application {
 		FONT = font == null ? Font.font(12) : font;
 	}
 
+	@Setter
 	private StandaloneBase base;
 
 	@Getter
@@ -47,7 +49,7 @@ public class LPStandaloneApp extends Application {
 			return;
 		}
 		base.getLog().info("Closing datastore...");
-		base.getDatastore().shutdown();
+		base.shutdown();
 
 		base.getLog().info("Unregistering API...");
 		LuckPerms.unregisterProvider();

@@ -70,20 +70,24 @@ public class StandaloneBase implements LuckPermsPlugin {
 		datastore.init();
 		datastore.loadAllGroups();
 		datastore.loadAllTracks();
-		new Thread(() -> {
+		doAsync(() -> {
 			Set<UUID> users = datastore.getUniqueUsers();
 			users.forEach(user -> {
-				try {
-					datastore.loadUser(user, datastore.getName(user));
-				} catch (Exception ex) {
-					System.err.println("Loading user error: " + ex + "\t by UUID " + user);
-				}
+				// TODO: make this faster, somehow?
+				doAsync(() -> {
+					try {
+						datastore.loadUser(user, datastore.getName(user));
+					} catch (Exception ex) {
+						System.err.println("Loading user error: " + ex + "\t by UUID " + user);
+					}
+				});
 			});
-		}).start();
+		});
 	}
 
 	public void shutdown() {
 		datastore.shutdown();
+		threadPool.shutdown();
 	}
 
 	@Override

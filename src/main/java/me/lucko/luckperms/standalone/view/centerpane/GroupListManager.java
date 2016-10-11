@@ -20,7 +20,6 @@ import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.view.elements.GroupTreeObject;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
-import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
 public class GroupListManager extends VBox {
 
@@ -99,8 +98,7 @@ public class GroupListManager extends VBox {
 		}).forEach(group -> groupList.getRoot().getChildren().add(new TreeItem<>(new GroupTreeObject(group))));
 	}
 
-	private Group fromItem(TreeItem<GroupTreeObject> treeItem) {
-		TreeItem<GroupTreeObject> item = treeItem;
+	private Group fromItem(TreeItem<GroupTreeObject> item) {
 		if (item == null) {
 			return null;
 		}

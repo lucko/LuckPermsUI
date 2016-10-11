@@ -41,6 +41,7 @@ public class LoginController {
 			datastore = null;
 		}
 		base.doAsync(() -> {
+			app.setBase(base);
 			base.loadDatastore(datastore);
 			base.doSync(() -> SimpleViewFactory.getInstance().openManager(app, base));
 		});
