@@ -74,7 +74,7 @@ public class StandaloneBase implements LuckPermsPlugin {
 			Set<UUID> users = datastore.getUniqueUsers();
 			users.forEach(user -> doAsync(() -> {
 				try {
-					datastore.loadUser(user, null);
+					datastore.loadUser(user, "null");
 				} catch (Exception ex) {
 					System.err.println("Loading user error: " + ex + "\t by UUID " + user);
 				}
