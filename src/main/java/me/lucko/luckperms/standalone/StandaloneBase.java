@@ -72,16 +72,13 @@ public class StandaloneBase implements LuckPermsPlugin {
 		datastore.loadAllTracks();
 		doAsync(() -> {
 			Set<UUID> users = datastore.getUniqueUsers();
-			users.forEach(user -> {
-				// TODO: make this faster, somehow?
-				doAsync(() -> {
-					try {
-						datastore.loadUser(user, datastore.getName(user));
-					} catch (Exception ex) {
-						System.err.println("Loading user error: " + ex + "\t by UUID " + user);
-					}
-				});
-			});
+			users.forEach(user -> doAsync(() -> {
+				try {
+					datastore.loadUser(user, null);
+				} catch (Exception ex) {
+					System.err.println("Loading user error: " + ex + "\t by UUID " + user);
+				}
+			}));
 		});
 	}
 
@@ -110,17 +107,12 @@ public class StandaloneBase implements LuckPermsPlugin {
 
 	@Override
 	public File getMainDir() {
-		return null; // Is this needed? TODO
+		return new File(".");
 	}
 
 	@Override
 	public File getDataFolder() {
-		return null; // Is this needed? TODO
-	}
-
-	@Override
-	public void runUpdateTask() {
-		// Is this needed?? TODO
+		return new File(getMainDir(), "data");
 	}
 
 	@Override
@@ -137,10 +129,14 @@ public class StandaloneBase implements LuckPermsPlugin {
 	 * Methods below are only required in plugins. They're just left empty /
 	 * default.
 	 */
+	@Override
+	public void runUpdateTask() {
+	}
 
 	@Override
 	public Importer getImporter() {
 		return null;
+		// TODO: Importer for later
 	}
 
 	@Override
