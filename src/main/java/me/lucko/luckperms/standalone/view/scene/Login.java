@@ -1,19 +1,22 @@
 package me.lucko.luckperms.standalone.view.scene;
 
-import java.io.File;
-
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+
+import java.io.File;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import me.lucko.luckperms.DatabaseType;
 import me.lucko.luckperms.api.data.Callback;
 import me.lucko.luckperms.standalone.controller.LoginController;
@@ -143,7 +146,7 @@ public class Login extends VBox {
 			int row = 0;
 			Label fileLocationLabel = new Label("Location");
 			fileLocation = new JFXTextField();
-			fileLocation.setPromptText("path/to/file");
+			fileLocation.setPromptText("path/to/data/folder");
 			GridPane.setConstraints(fileLocationLabel, 1, ++row);
 			GridPane.setConstraints(fileLocation, 2, row);
 
@@ -162,9 +165,9 @@ public class Login extends VBox {
 		}
 
 		private void chooseFile(Callback<File> fileCallback) {
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Choose database file for type '" + getType().getType() + "'.");
-			File file = fileChooser.showOpenDialog(Login.this.getScene().getWindow());
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			directoryChooser.setTitle("Choose database folder for type '" + getType().getType() + "'.");
+			File file = directoryChooser.showDialog(Login.this.getScene().getWindow());
 			if (file != null) {
 				this.file = file;
 				fileCallback.onComplete(file);
