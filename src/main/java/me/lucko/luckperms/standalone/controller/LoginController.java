@@ -6,8 +6,8 @@ import me.lucko.luckperms.LPStandaloneApp;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.storage.Datastore;
-import me.lucko.luckperms.storage.methods.*;
+import me.lucko.luckperms.common.storage.Datastore;
+import me.lucko.luckperms.common.storage.methods.*;
 
 @AllArgsConstructor
 public class LoginController {

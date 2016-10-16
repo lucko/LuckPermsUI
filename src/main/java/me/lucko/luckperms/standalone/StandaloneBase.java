@@ -12,27 +12,27 @@ import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
 import lombok.Getter;
-import me.lucko.luckperms.LuckPermsPlugin;
+import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.Logger;
 import me.lucko.luckperms.api.PlatformType;
-import me.lucko.luckperms.api.implementation.ApiProvider;
-import me.lucko.luckperms.commands.ConsecutiveExecutor;
-import me.lucko.luckperms.commands.Sender;
-import me.lucko.luckperms.config.LPConfiguration;
-import me.lucko.luckperms.constants.Constants;
-import me.lucko.luckperms.constants.Message;
-import me.lucko.luckperms.constants.Permission;
-import me.lucko.luckperms.contexts.ContextManager;
-import me.lucko.luckperms.core.UuidCache;
-import me.lucko.luckperms.data.Importer;
-import me.lucko.luckperms.groups.GroupManager;
+import me.lucko.luckperms.common.LuckPermsPlugin;
+import me.lucko.luckperms.common.api.ApiProvider;
+import me.lucko.luckperms.common.calculators.CalculatorFactory;
+import me.lucko.luckperms.common.commands.ConsecutiveExecutor;
+import me.lucko.luckperms.common.commands.Sender;
+import me.lucko.luckperms.common.config.LPConfiguration;
+import me.lucko.luckperms.common.constants.Constants;
+import me.lucko.luckperms.common.constants.Permission;
+import me.lucko.luckperms.common.contexts.ContextManager;
+import me.lucko.luckperms.common.core.UuidCache;
+import me.lucko.luckperms.common.data.Importer;
+import me.lucko.luckperms.common.groups.GroupManager;
+import me.lucko.luckperms.common.storage.Datastore;
+import me.lucko.luckperms.common.tracks.TrackManager;
+import me.lucko.luckperms.common.users.UserManager;
+import me.lucko.luckperms.common.utils.LocaleManager;
+import me.lucko.luckperms.common.utils.LogFactory;
 import me.lucko.luckperms.standalone.model.StorageOptions;
-import me.lucko.luckperms.standalone.users.StandaloneUserManager;
-import me.lucko.luckperms.storage.Datastore;
-import me.lucko.luckperms.tracks.TrackManager;
-import me.lucko.luckperms.users.UserManager;
-import me.lucko.luckperms.utils.LocaleManager;
-import me.lucko.luckperms.utils.LogFactory;
 
 @Getter
 public class StandaloneBase implements LuckPermsPlugin {
@@ -58,7 +58,7 @@ public class StandaloneBase implements LuckPermsPlugin {
 		localeManager = new LocaleManager();
 
 		uuidCache = new UuidCache(true);
-		userManager = new StandaloneUserManager(this);
+		userManager = new UserManager(this);
 		groupManager = new GroupManager(this);
 		trackManager = new TrackManager();
 
@@ -155,8 +155,8 @@ public class StandaloneBase implements LuckPermsPlugin {
 	}
 
 	@Override
-	public Message getPlayerStatus(UUID uuid) {
-		return Message.PLAYER_OFFLINE;
+	public CalculatorFactory getCalculatorFactory() {
+		return null;
 	}
 
 	@Override
@@ -167,6 +167,16 @@ public class StandaloneBase implements LuckPermsPlugin {
 	@Override
 	public List<String> getPlayerList() {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public Set<UUID> getOnlinePlayers() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public boolean isOnline(UUID uuid) {
+		return false;
 	}
 
 	@Override
@@ -206,8 +216,8 @@ public class StandaloneBase implements LuckPermsPlugin {
 	}
 
 	@Override
-	public List<String> getPossiblePermissions() {
-		return Collections.emptyList();
+	public Set<Contexts> getPreProcessContexts(boolean b) {
+		return null;
 	}
 
 	@Override

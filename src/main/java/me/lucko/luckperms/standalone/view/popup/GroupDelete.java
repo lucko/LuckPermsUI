@@ -1,10 +1,10 @@
 package me.lucko.luckperms.standalone.view.popup;
 
-import java.util.Arrays;
-
 import com.jfoenix.controls.JFXTextField;
 
-import me.lucko.luckperms.groups.Group;
+import java.util.Arrays;
+
+import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormItem;
 import me.lucko.luckperms.standalone.util.form.FormResultType;

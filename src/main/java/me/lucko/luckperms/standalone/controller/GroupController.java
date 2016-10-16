@@ -5,7 +5,7 @@ import lombok.Getter;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.exceptions.ObjectAlreadyHasException;
 import me.lucko.luckperms.exceptions.ObjectLacksException;
-import me.lucko.luckperms.groups.Group;
+import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
@@ -139,7 +139,7 @@ public class GroupController {
 	}
 
 	private void addPermission(Group group, String node, String server, String world, boolean active) {
-		Node perm = new me.lucko.luckperms.core.Node.Builder(node).setServer(server).setWorld(world).setValue(active)
+		Node perm = new me.lucko.luckperms.common.core.Node.Builder(node).setServer(server).setWorld(world).setValue(active)
 				.build();
 		try {
 			group.setPermission(perm);

@@ -4,7 +4,7 @@ import java.io.File;
 
 import lombok.Getter;
 import me.lucko.luckperms.DatabaseType;
-import me.lucko.luckperms.storage.DatastoreConfiguration;
+import me.lucko.luckperms.common.storage.DatastoreConfiguration;
 
 @Getter
 public class StorageOptions extends DatastoreConfiguration {

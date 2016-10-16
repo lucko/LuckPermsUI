@@ -4,7 +4,7 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.lucko.luckperms.groups.Group;
+import me.lucko.luckperms.common.groups.Group;
 
 @AllArgsConstructor
 public class GroupTreeObject extends RecursiveTreeObject<GroupTreeObject> {

@@ -1,6 +1,7 @@
 package me.lucko.luckperms.standalone.view.popup;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import javafx.scene.control.TextField;
 import me.lucko.luckperms.standalone.util.form.FormBase;
@@ -12,7 +13,7 @@ public class UserNew extends FormBase {
 	// TODO
 	public UserNew(Manager view, String preFilled) {
 		super(view, "Registering a new user into the system.",
-				Arrays.asList(new FormItem("Username", new TextField(preFilled))),
+				Collections.singletonList(new FormItem("Username", new TextField(preFilled))),
 				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
 	}
 

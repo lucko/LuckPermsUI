@@ -1,22 +1,26 @@
 package me.lucko.luckperms.standalone.view.sidepane;
 
-import java.util.regex.Pattern;
-
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 
+import java.util.regex.Pattern;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import me.lucko.luckperms.LPStandaloneApp;
 import me.lucko.luckperms.api.MetaUtils;
 import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.implementation.internal.GroupLink;
-import me.lucko.luckperms.groups.Group;
+import me.lucko.luckperms.common.api.internal.GroupLink;
+import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.util.ColoredLine;
 import me.lucko.luckperms.standalone.util.form.Updatable;

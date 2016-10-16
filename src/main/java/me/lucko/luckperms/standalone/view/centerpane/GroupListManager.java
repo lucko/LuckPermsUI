@@ -1,11 +1,11 @@
 package me.lucko.luckperms.standalone.view.centerpane;
 
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TextField;
@@ -14,7 +14,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import me.lucko.luckperms.groups.Group;
+import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.util.form.Updatable;

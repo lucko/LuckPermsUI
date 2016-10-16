@@ -1,8 +1,8 @@
 package me.lucko.luckperms.standalone.view.centerpane;
 
-import java.util.UUID;
-
 import com.jfoenix.controls.JFXTextField;
+
+import java.util.UUID;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -10,13 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import me.lucko.luckperms.common.users.User;
 import me.lucko.luckperms.standalone.util.UsernameGetter;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormResultType;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.popup.UserNew;
 import me.lucko.luckperms.standalone.view.scene.Manager;
-import me.lucko.luckperms.users.User;
 
 public class UserManager extends BorderPane {
 

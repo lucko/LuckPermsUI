@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.groups.Group;
+import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.util.form.FormBase;
 import me.lucko.luckperms.standalone.util.form.FormItem;
 import me.lucko.luckperms.standalone.util.form.FormResultType;

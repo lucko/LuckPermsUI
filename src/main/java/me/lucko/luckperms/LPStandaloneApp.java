@@ -7,9 +7,7 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import me.lucko.luckperms.standalone.StandaloneBase;
-import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
-import me.lucko.luckperms.standalone.view.scene.Login;
 
 public class LPStandaloneApp extends Application {
 	public static final Font FONT;
