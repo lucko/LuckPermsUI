@@ -17,7 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import me.lucko.luckperms.DatabaseType;
+import me.lucko.luckperms.standalone.DatabaseType;
 import me.lucko.luckperms.api.data.Callback;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.model.StorageOptions;

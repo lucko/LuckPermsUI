@@ -1,8 +1,6 @@
 package me.lucko.luckperms.standalone;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +34,7 @@ import me.lucko.luckperms.standalone.model.StorageOptions;
 
 @Getter
 public class StandaloneBase implements LuckPermsPlugin {
+	private static final String VERSION = StandaloneBase.class.getPackage().getImplementationVersion();
 	private final ExecutorService threadPool = Executors.newCachedThreadPool();
 
 	private final java.util.logging.Logger logger;
@@ -94,15 +93,7 @@ public class StandaloneBase implements LuckPermsPlugin {
 
 	@Override
 	public String getVersion() {
-		String version = "Version not found exception.";
-		try {
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(getClass().getResourceAsStream("/assets/version.txt")));
-			version = reader.readLine();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return version;
+		return VERSION;
 	}
 
 	@Override

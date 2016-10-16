@@ -60,7 +60,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.lucko.luckperms.LPStandaloneApp</mainClass>
+                            <mainClass>me.lucko.luckperms.standalone.LPStandaloneApp</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>

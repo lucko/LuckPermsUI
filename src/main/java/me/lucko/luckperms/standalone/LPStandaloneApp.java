@@ -1,4 +1,4 @@
-package me.lucko.luckperms;
+package me.lucko.luckperms.standalone;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -6,7 +6,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import me.lucko.luckperms.standalone.StandaloneBase;
+import me.lucko.luckperms.ApiHandler;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 
 public class LPStandaloneApp extends Application {
@@ -50,7 +50,7 @@ public class LPStandaloneApp extends Application {
 		base.shutdown();
 
 		base.getLog().info("Unregistering API...");
-		LuckPerms.unregisterProvider();
+		ApiHandler.unregisterProvider();
 	}
 
 }

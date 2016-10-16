@@ -1,4 +1,4 @@
-package me.lucko.luckperms;
+package me.lucko.luckperms.standalone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,7 +2,7 @@ package me.lucko.luckperms.standalone.view.elements;
 
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import me.lucko.luckperms.LPStandaloneApp;
+import me.lucko.luckperms.standalone.LPStandaloneApp;
 
 public class TexturedButton extends ImageView {
 

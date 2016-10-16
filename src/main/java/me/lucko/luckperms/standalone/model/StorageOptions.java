@@ -3,7 +3,7 @@ package me.lucko.luckperms.standalone.model;
 import java.io.File;
 
 import lombok.Getter;
-import me.lucko.luckperms.DatabaseType;
+import me.lucko.luckperms.standalone.DatabaseType;
 import me.lucko.luckperms.common.storage.DatastoreConfiguration;
 
 @Getter

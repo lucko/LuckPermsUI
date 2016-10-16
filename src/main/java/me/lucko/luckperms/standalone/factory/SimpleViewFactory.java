@@ -2,7 +2,7 @@ package me.lucko.luckperms.standalone.factory;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import me.lucko.luckperms.LPStandaloneApp;
+import me.lucko.luckperms.standalone.LPStandaloneApp;
 import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.StandaloneBase;
 import me.lucko.luckperms.standalone.controller.GroupController;
