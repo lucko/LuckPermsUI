@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -16,11 +17,12 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import me.lucko.luckperms.standalone.LPStandaloneApp;
+import lombok.Setter;
 import me.lucko.luckperms.api.MetaUtils;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.common.api.internal.GroupLink;
 import me.lucko.luckperms.common.groups.Group;
+import me.lucko.luckperms.standalone.LPStandaloneApp;
 import me.lucko.luckperms.standalone.controller.GroupController;
 import me.lucko.luckperms.standalone.util.ColoredLine;
 import me.lucko.luckperms.standalone.util.form.Updatable;
@@ -28,6 +30,10 @@ import me.lucko.luckperms.standalone.view.elements.NodeTreeObject;
 import me.lucko.luckperms.standalone.view.elements.TexturedButton;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 
+/**
+ * The Sidebar for groups
+ * TODO javadocs
+ */
 public class SideGroup extends VBox implements Updatable {
 
 	private TreeTableView<NodeTreeObject> permissionList;
@@ -38,6 +44,8 @@ public class SideGroup extends VBox implements Updatable {
 
 	private Manager parent;
 	private Group group;
+
+	@Setter
 	private GroupController controller;
 
 	public SideGroup(Manager parent, Group group) {
@@ -52,17 +60,18 @@ public class SideGroup extends VBox implements Updatable {
 		HBox topRightCorner = new HBox();
 		Label nameLabel = new Label(String.format("Permissions of %s.", group.getName()));
 		nameLabel.setPadding(new Insets(4, 0, 0, 0));
-		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24,
-				String.format("Add a permission to the group %s.", group.getName()));
+
+		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24, String.format("Add a permission to the group %s.", group.getName()));
 		TexturedButton changeButton = new TexturedButton("assets/images/change.png", 24, "Change selected permission.");
-		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24,
-				String.format("Remove selected permission for %s.", group.getName()));
+		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24, String.format("Remove selected permission for %s.", group.getName()));
 
 		HBox searchers = new HBox();
 		searchServer = new JFXTextField();
 		searchServer.setPromptText("Search filter server.");
+
 		searchWorld = new JFXTextField();
 		searchWorld.setPromptText("Search filter world.");
+
 		searchNode = new JFXTextField();
 		searchNode.setPromptText("Search filter node.");
 
@@ -73,14 +82,12 @@ public class SideGroup extends VBox implements Updatable {
 		setupTable();
 
 		addButton.setOnMouseClicked(click -> onPermissionAdd());
-		changeButton.setOnMouseClicked(
-			click -> onPermissionChange(fromItem(permissionList.getSelectionModel().getSelectedItem())));
-		removeButton.setOnMouseClicked(
-			click -> onPermissionRemove(fromItem(permissionList.getSelectionModel().getSelectedItem())));
+		changeButton.setOnMouseClicked(click -> onPermissionChange(fromItem(permissionList.getSelectionModel().getSelectedItem())));
+		removeButton.setOnMouseClicked(click -> onPermissionRemove(fromItem(permissionList.getSelectionModel().getSelectedItem())));
 
-		searchServer.textProperty().addListener(onChange -> fillPermissionList());
-		searchWorld.textProperty().addListener(onChange -> fillPermissionList());
-		searchNode.textProperty().addListener(onChange -> fillPermissionList());
+		searchServer.textProperty().addListener(onChange -> populatePermissionList());
+		searchWorld.textProperty().addListener(onChange -> populatePermissionList());
+		searchNode.textProperty().addListener(onChange -> populatePermissionList());
 		permissionList.setOnMouseClicked(click -> {
 			if (click.getClickCount() >= 2) {
 				onPermissionChange(fromItem(permissionList.getSelectionModel().getSelectedItem()));
@@ -96,6 +103,7 @@ public class SideGroup extends VBox implements Updatable {
 
 	private void buildGroupInfo() {
 		groupInfo.getChildren().clear();
+
 		String prefix = MetaUtils.getPrefix(new GroupLink(group), null, null, true);
 		if (prefix != null && !prefix.isEmpty()) {
 			ColoredLine prefixLine = new ColoredLine("Prefix = " + prefix);
@@ -115,59 +123,33 @@ public class SideGroup extends VBox implements Updatable {
 		}
 	}
 
+	private TreeTableColumn<NodeTreeObject, String> makeColumn(String name, Function<Node, SimpleStringProperty> propFunc) {
+		TreeTableColumn<NodeTreeObject, String> column = new JFXTreeTableColumn<>(name);
+		column.setResizable(false);
+		column.setCellValueFactory((TreeTableColumn.CellDataFeatures<NodeTreeObject, String> param) -> {
+			Node node = fromItem(param.getValue());
+			if (node == null) {
+				return new SimpleStringProperty();
+			}
+			return propFunc.apply(node);
+		});
+		return column;
+	}
+
 	private void setupTable() {
 		permissionList = new JFXTreeTableView<>();
+		permissionList.getColumns().add(makeColumn("Node", node -> new SimpleStringProperty(node.getPermission())));
+		permissionList.getColumns().add(makeColumn("Value", node -> new SimpleStringProperty(node.getValue().toString())));
+		permissionList.getColumns().add(makeColumn("Server", node -> new SimpleStringProperty(node.getServer().orElse(""))));
+		permissionList.getColumns().add(makeColumn("World", node -> new SimpleStringProperty(node.getWorld().orElse(""))));
 
-		TreeTableColumn<NodeTreeObject, String> nodeColumn = new JFXTreeTableColumn<>("Node");
-		nodeColumn.setResizable(false);
-		nodeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<NodeTreeObject, String> param) -> {
-			Node node = fromItem(param.getValue());
-			if (node == null) {
-				return new SimpleStringProperty();
-			}
-			return new SimpleStringProperty(node.getPermission());
-		});
-		permissionList.getColumns().add(nodeColumn);
-
-		TreeTableColumn<NodeTreeObject, String> activeColumn = new JFXTreeTableColumn<>("Allowed");
-		activeColumn.setResizable(false);
-		activeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<NodeTreeObject, String> param) -> {
-			Node node = fromItem(param.getValue());
-			if (node == null) {
-				return new SimpleStringProperty();
-			}
-			return new SimpleStringProperty(node.getValue().toString());
-		});
-		permissionList.getColumns().add(activeColumn);
-
-		TreeTableColumn<NodeTreeObject, String> serverColumn = new JFXTreeTableColumn<>("Server");
-		serverColumn.setResizable(false);
-		serverColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<NodeTreeObject, String> param) -> {
-			Node node = fromItem(param.getValue());
-			if (node == null) {
-				return new SimpleStringProperty();
-			}
-			return new SimpleStringProperty(node.getServer().orElse(""));
-		});
-		permissionList.getColumns().add(serverColumn);
-
-		TreeTableColumn<NodeTreeObject, String> worldColumn = new JFXTreeTableColumn<>("World");
-		worldColumn.setResizable(false);
-		worldColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<NodeTreeObject, String> param) -> {
-			Node node = fromItem(param.getValue());
-			if (node == null) {
-				return new SimpleStringProperty();
-			}
-			return new SimpleStringProperty(node.getWorld().orElse(""));
-		});
-		permissionList.getColumns().add(worldColumn);
-
-		TreeItem treeItem = new TreeItem<>();
+		TreeItem<NodeTreeObject> treeItem = new TreeItem<>();
 		treeItem.setExpanded(true);
 		permissionList.setRoot(treeItem);
 		permissionList.setShowRoot(false);
 		permissionList.setPrefHeight(Short.MAX_VALUE);
 
+		// TODO doc? wtf does this do?!!
 		widthProperty().addListener(change -> {
 			int hack = 3;
 			int columns = permissionList.getColumns().size() + hack;
@@ -177,7 +159,7 @@ public class SideGroup extends VBox implements Updatable {
 			}
 		});
 
-		fillPermissionList();
+		populatePermissionList();
 		permissionList.setPrefWidth(250);
 		permissionList.setPrefHeight(Short.MAX_VALUE);
 	}
@@ -201,10 +183,9 @@ public class SideGroup extends VBox implements Updatable {
 			return;
 		}
 		controller.removePermission(parent, group, permission);
-
 	}
 
-	public void fillPermissionList() {
+	public void populatePermissionList() {
 		permissionList.getRoot().getChildren().clear();
 
 		String searchServer = this.searchServer.getText();
@@ -214,12 +195,13 @@ public class SideGroup extends VBox implements Updatable {
 		Pattern serverPattern = null;
 		Pattern worldPattern = null;
 		Pattern nodePattern = null;
+
 		try {
 			serverPattern = Pattern.compile(searchServer);
 			worldPattern = Pattern.compile(searchWorld);
 			nodePattern = Pattern.compile(searchNode);
-		} catch (Exception e) {
-		}
+		} catch (Exception ignored) {}
+
 		for (Node permission : group.getNodes()) {
 			if (!searchNode.isEmpty()
 					&& (permission.getPermission() == null || !permission.getPermission().contains(searchNode)
@@ -236,6 +218,7 @@ public class SideGroup extends VBox implements Updatable {
 							&& !serverPattern.matcher(permission.getServer().get()).find()))) {
 				continue;
 			}
+
 			permissionList.getRoot().getChildren().add(new TreeItem<>(new NodeTreeObject(permission)));
 		}
 	}
@@ -243,21 +226,19 @@ public class SideGroup extends VBox implements Updatable {
 	@Override
 	public void update() {
 		buildGroupInfo();
-		fillPermissionList();
-	}
-
-	public void registerController(GroupController controller) {
-		this.controller = controller;
+		populatePermissionList();
 	}
 
 	private Node fromItem(TreeItem<NodeTreeObject> item) {
 		if (item == null) {
 			return null;
 		}
+
 		NodeTreeObject nto = item.getValue();
 		if (nto == null) {
 			return null;
 		}
+
 		return nto.getNode();
 	}
 }

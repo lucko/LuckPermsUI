@@ -3,14 +3,12 @@ package me.lucko.luckperms.standalone.view.elements;
 import java.util.Collection;
 
 import javafx.util.StringConverter;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public abstract class ObjectStringConverter<T> extends StringConverter<T> {
 
 	private Collection<T> list;
-
-	public ObjectStringConverter(Collection<T> list) {
-		this.list = list;
-	}
 
 	@Override
 	public T fromString(String string) {

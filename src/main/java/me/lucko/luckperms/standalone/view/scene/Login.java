@@ -17,8 +17,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import me.lucko.luckperms.standalone.DatabaseType;
+import javafx.stage.FileChooser;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.lucko.luckperms.api.data.Callback;
+import me.lucko.luckperms.standalone.DatabaseType;
 import me.lucko.luckperms.standalone.controller.LoginController;
 import me.lucko.luckperms.standalone.model.StorageOptions;
 import me.lucko.luckperms.standalone.view.elements.RaisedButton;
@@ -41,6 +44,7 @@ public class Login extends VBox {
 
 		HBox row = new HBox(8);
 		row.setAlignment(Pos.CENTER);
+
 		Label databaseTypeLabel = new Label("Database type");
 		ComboBox<DatabaseType> databaseTypeField = new JFXComboBox<>();
 		databaseTypeField.getItems().addAll(DatabaseType.values());
@@ -67,78 +71,71 @@ public class Login extends VBox {
 	private void changeForm(DatabaseType type, GridPane grid) {
 		grid.getChildren().clear();
 		switch (type) {
-		case MYSQL:
-			form = new MySQLForm();
-			break;
-		case SQLITE:
-			form = new SQLiteForm();
-			break;
-		case H2:
-			form = new H2Form();
-			break;
-		case JSON:
-			form = new JSONForm();
-			break;
-		case YAML:
-			form = new YAMLForm();
-			break;
-		case MONGODB:
-			form = new MongoDBForm();
-			break;
+			case MONGODB:
+			case MYSQL:
+				form = new LoginForm(type);
+				break;
+			case SQLITE:
+			case H2:
+				form = new FileForm(type);
+				break;
+			case JSON:
+			case YAML:
+				form = new FolderForm(type);
+				break;
 		}
 		form.build(grid);
 	}
 
 	public interface DatabaseForm {
+
 		void build(GridPane pane);
-
 		StorageOptions onConfirm();
+
 	}
 
-	public class MySQLForm extends LoginForm {
+	public class FolderForm extends AbstractFileForm {
+		public FolderForm(DatabaseType type) {
+			super(type, "path/to/data/folder");
+		}
+
 		@Override
-		public DatabaseType getType() {
-			return DatabaseType.MYSQL;
+		protected void chooseFile(Callback<File> fileCallback) {
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			directoryChooser.setTitle("Choose database folder for type '" + getType().getType() + "'.");
+			File file = directoryChooser.showDialog(Login.this.getScene().getWindow());
+			if (file != null) {
+				this.file = file;
+				fileCallback.onComplete(file);
+			}
 		}
 	}
 
-	public class SQLiteForm extends FileForm {
+	public class FileForm extends AbstractFileForm {
+		public FileForm(DatabaseType type) {
+			super(type, "path/to/file");
+		}
+
 		@Override
-		public DatabaseType getType() {
-			return DatabaseType.SQLITE;
+		protected void chooseFile(Callback<File> fileCallback) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Choose database file for type '" + getType().getType() + "'.");
+			File file = fileChooser.showOpenDialog(Login.this.getScene().getWindow());
+			if (file != null) {
+				this.file = file;
+				fileCallback.onComplete(file);
+			}
 		}
 	}
 
-	public class H2Form extends FileForm {
-		@Override
-		public DatabaseType getType() {
-			return DatabaseType.H2;
-		}
-	}
+	@RequiredArgsConstructor
+	public abstract class AbstractFileForm implements DatabaseForm {
 
-	public class JSONForm extends FileForm {
-		@Override
-		public DatabaseType getType() {
-			return DatabaseType.JSON;
-		}
-	}
+		@Getter
+		private final DatabaseType type;
+		private final String pathDescriptor;
 
-	public class YAMLForm extends FileForm {
-		@Override
-		public DatabaseType getType() {
-			return DatabaseType.YAML;
-		}
-	}
-
-	public class MongoDBForm extends LoginForm {
-		@Override
-		public DatabaseType getType() {
-			return DatabaseType.MONGODB;
-		}
-	}
-
-	public abstract class FileForm implements DatabaseForm {
-		private File file;
+		protected File file;
 		private TextField fileLocation;
 
 		@Override
@@ -146,7 +143,7 @@ public class Login extends VBox {
 			int row = 0;
 			Label fileLocationLabel = new Label("Location");
 			fileLocation = new JFXTextField();
-			fileLocation.setPromptText("path/to/data/folder");
+			fileLocation.setPromptText(pathDescriptor);
 			GridPane.setConstraints(fileLocationLabel, 1, ++row);
 			GridPane.setConstraints(fileLocation, 2, row);
 
@@ -164,20 +161,15 @@ public class Login extends VBox {
 			return new StorageOptions(getType(), file);
 		}
 
-		private void chooseFile(Callback<File> fileCallback) {
-			DirectoryChooser directoryChooser = new DirectoryChooser();
-			directoryChooser.setTitle("Choose database folder for type '" + getType().getType() + "'.");
-			File file = directoryChooser.showDialog(Login.this.getScene().getWindow());
-			if (file != null) {
-				this.file = file;
-				fileCallback.onComplete(file);
-			}
-		}
-
-		public abstract DatabaseType getType();
+		protected abstract void chooseFile(Callback<File> fileCallback);
 	}
 
-	public abstract class LoginForm implements DatabaseForm {
+	@RequiredArgsConstructor
+	public class LoginForm implements DatabaseForm {
+
+		@Getter
+		private final DatabaseType type;
+
 		private TextField databaseHostField;
 		private TextField databasePortField;
 		private TextField databaseField;
@@ -189,7 +181,7 @@ public class Login extends VBox {
 			int row = 0;
 			Label databaseHostLabel = new Label("Host");
 			databaseHostField = new JFXTextField();
-			databaseHostField.setPromptText("example.com");
+			databaseHostField.setPromptText("127.0.0.1");
 			GridPane.setConstraints(databaseHostLabel, 1, ++row);
 			GridPane.setConstraints(databaseHostField, 2, row);
 
@@ -201,18 +193,19 @@ public class Login extends VBox {
 
 			Label databaseLabel = new Label("Database");
 			databaseField = new JFXTextField();
+			databaseField.setPromptText("minecraft");
 			GridPane.setConstraints(databaseLabel, 1, ++row);
 			GridPane.setConstraints(databaseField, 2, row);
 
 			Label usernameLabel = new Label("Username");
 			usernameField = new JFXTextField();
-			usernameField.setPromptText("My Awesome Username");
+			usernameField.setPromptText("root");
 			GridPane.setConstraints(usernameLabel, 1, ++row);
 			GridPane.setConstraints(usernameField, 2, row);
 
 			Label passwordLabel = new Label("Password");
 			passwordField = new JFXPasswordField();
-			passwordField.setPromptText("My Secret Password");
+			passwordField.setPromptText("passw0rd");
 			GridPane.setConstraints(passwordLabel, 1, ++row);
 			GridPane.setConstraints(passwordField, 2, row);
 
@@ -225,7 +218,5 @@ public class Login extends VBox {
 			return new StorageOptions(getType(), databaseHostField.getText() + ":" + databasePortField.getText(),
 					databaseField.getText(), usernameField.getText(), passwordField.getText());
 		}
-
-		public abstract DatabaseType getType();
 	}
 }

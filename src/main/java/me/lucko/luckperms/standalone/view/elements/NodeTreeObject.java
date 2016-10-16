@@ -11,4 +11,5 @@ public class NodeTreeObject extends RecursiveTreeObject<NodeTreeObject> {
 
 	@Getter
 	private Node node;
+
 }

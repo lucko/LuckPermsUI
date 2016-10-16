@@ -14,7 +14,8 @@ public class UserNew extends FormBase {
 	public UserNew(Manager view, String preFilled) {
 		super(view, "Registering a new user into the system.",
 				Collections.singletonList(new FormItem("Username", new TextField(preFilled))),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
+				Arrays.asList(FormResultType.OK, FormResultType.CANCEL)
+		);
 	}
 
 }

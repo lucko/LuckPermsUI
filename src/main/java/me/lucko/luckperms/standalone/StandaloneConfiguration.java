@@ -5,6 +5,9 @@ import java.util.Map;
 
 import me.lucko.luckperms.common.config.AbstractConfiguration;
 
+/**
+ * Dummy configuration. Will just return default values.
+ */
 public class StandaloneConfiguration extends AbstractConfiguration<StandaloneBase> {
 	public StandaloneConfiguration(StandaloneBase plugin) {
 		super(plugin, "global", true, "null");

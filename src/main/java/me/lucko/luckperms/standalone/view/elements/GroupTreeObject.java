@@ -11,4 +11,5 @@ public class GroupTreeObject extends RecursiveTreeObject<GroupTreeObject> {
 
 	@Getter
 	private Group group;
+
 }

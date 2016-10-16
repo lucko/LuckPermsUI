@@ -126,8 +126,7 @@ public class GroupController {
 	}
 
 	private Group addGroup(String name) {
-		Group newGroup = base.getGroupManager().apply(name);
-		return newGroup;
+		return base.getGroupManager().apply(name);
 	}
 
 	private void removePermission(Group group, Node permission) {

@@ -9,6 +9,9 @@ import lombok.Setter;
 import me.lucko.luckperms.ApiHandler;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 
+/**
+ * The main entry point into the application.
+ */
 public class LPStandaloneApp extends Application {
 	public static final Font FONT;
 
@@ -32,7 +35,7 @@ public class LPStandaloneApp extends Application {
 		this.primaryStage = primaryStage;
 
 		SimpleViewFactory.getInstance().openLogin(this);
-		primaryStage.setTitle("LuckPerms User Interface\u2122");
+		primaryStage.setTitle("LuckPermsUI");
 		primaryStage.show();
 	}
 
@@ -46,6 +49,7 @@ public class LPStandaloneApp extends Application {
 		if (base == null) {
 			return;
 		}
+
 		base.getLog().info("Closing datastore...");
 		base.shutdown();
 

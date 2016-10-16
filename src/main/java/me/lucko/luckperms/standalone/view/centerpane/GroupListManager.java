@@ -40,6 +40,7 @@ public class GroupListManager extends VBox implements Updatable {
 		search = new JFXTextField();
 		search.setPromptText("Search group by name.");
 		search.setPrefWidth(Short.MAX_VALUE);
+
 		TexturedButton addButton = new TexturedButton("assets/images/add.png", 24, "Create a new group.");
 		TexturedButton refreshButton = new TexturedButton("assets/images/refresh.png", 24, "Remove selected group.");
 		TexturedButton removeButton = new TexturedButton("assets/images/remove.png", 24, "Remove selected group.");
@@ -100,7 +101,8 @@ public class GroupListManager extends VBox implements Updatable {
 			return new SimpleStringProperty(group.getDisplayName());
 		});
 		groupList.getColumns().add(nameColumn);
-		TreeItem treeItem = new TreeItem<>();
+
+		TreeItem<GroupTreeObject> treeItem = new TreeItem<>();
 		treeItem.setExpanded(true);
 		groupList.setRoot(treeItem);
 		groupList.setShowRoot(false);
@@ -110,16 +112,18 @@ public class GroupListManager extends VBox implements Updatable {
 	private void fillGroupView() {
 		Map<String, Group> groups = parent.getController().getBase().getGroupManager().getAll();
 		groupList.getRoot().getChildren().clear();
-		groups.values().stream().filter(group -> {
-			String filterLower = search.getText().toLowerCase();
-			Pattern pattern = Pattern.compile(".+");
-			try {
-				pattern = Pattern.compile(filterLower);
-			} catch (Exception ex) {
-			}
-			String groupName = group.getDisplayName().toLowerCase();
-			return filterLower.isEmpty() || pattern.matcher(groupName).find() || groupName.contains(filterLower);
-		}).forEach(group -> groupList.getRoot().getChildren().add(new TreeItem<>(new GroupTreeObject(group))));
+
+		groups.values().stream()
+				.filter(group -> {
+					String filterLower = search.getText().toLowerCase();
+					Pattern pattern = Pattern.compile(".+");
+					try {
+						pattern = Pattern.compile(filterLower);
+					} catch (Exception ignored) {}
+					String groupName = group.getDisplayName().toLowerCase();
+					return filterLower.isEmpty() || pattern.matcher(groupName).find() || groupName.contains(filterLower);
+				})
+				.forEach(group -> groupList.getRoot().getChildren().add(new TreeItem<>(new GroupTreeObject(group))));
 	}
 
 	@Override

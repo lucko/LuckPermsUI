@@ -11,6 +11,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
+import lombok.Setter;
 import me.lucko.luckperms.standalone.controller.ManagerController;
 import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
 import me.lucko.luckperms.standalone.view.elements.RaisedButton;
@@ -24,6 +25,7 @@ public class Manager extends StackPane {
 	private StackPane overlay;
 
 	@Getter
+	@Setter
 	private ManagerController controller;
 
 	public Manager() {
@@ -37,10 +39,6 @@ public class Manager extends StackPane {
 		widthProperty().addListener(resize -> onResize());
 		heightProperty().addListener(resize -> onResize());
 		Platform.runLater(this::onResize);
-	}
-
-	public void registerController(ManagerController controller) {
-		this.controller = controller;
 	}
 
 	private void setup() {

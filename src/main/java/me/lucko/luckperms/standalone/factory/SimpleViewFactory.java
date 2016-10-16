@@ -29,7 +29,7 @@ public class SimpleViewFactory {
         Stage stage = app.getPrimaryStage();
         Manager view = new Manager();
         ManagerController controller = new ManagerController(view, base);
-        view.registerController(controller);
+        view.setController(controller);
         app.setPrimaryScene(new Scene(view, 1024, 768));
         stage.centerOnScreen();
         stage.setResizable(true);
@@ -61,7 +61,7 @@ public class SimpleViewFactory {
 	public SideGroup linkGroup(Group group, Manager parent, StandaloneBase base) {
 		SideGroup view = new SideGroup(parent, group);
 		GroupController controller = new GroupController(view, base);
-		view.registerController(controller);
+		view.setController(controller);
 		return view;
     }
 }

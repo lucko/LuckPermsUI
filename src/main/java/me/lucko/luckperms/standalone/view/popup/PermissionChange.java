@@ -27,7 +27,7 @@ public class PermissionChange extends FormBase {
 				perms.getValue());
 	}
 
-	public static CheckBox preDoneCheckbox(boolean selected) {
+	private static CheckBox preDoneCheckbox(boolean selected) {
 		CheckBox checkBox = new CheckBox();
 		checkBox.setSelected(selected);
 		return checkBox;

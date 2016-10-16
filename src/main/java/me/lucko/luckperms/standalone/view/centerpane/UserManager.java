@@ -46,8 +46,7 @@ public class UserManager extends BorderPane {
 		addButton.setOnMouseClicked(click -> onUserAdd());
 		updateButton.setOnMouseClicked(click -> refreshUsername(userList.getSelectionModel().getSelectedItem()));
 		refreshButton.setOnMouseClicked(click -> filterList());
-		removeButton.setOnMouseClicked(click -> {
-		});
+		removeButton.setOnMouseClicked(click -> {});
 
 		topLane.getChildren().addAll(nameSearcher, addButton, updateButton, refreshButton, removeButton);
 		setTop(topLane);
@@ -78,12 +77,12 @@ public class UserManager extends BorderPane {
 		userList = new TableView<>();
 		userList.setPrefHeight(704);
 
-		TableColumn uuid = new TableColumn("UUID");
-		uuid.setCellValueFactory(new PropertyValueFactory<User, UUID>("uuid"));
-		TableColumn name = new TableColumn("Username");
-		name.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-		TableColumn group = new TableColumn("Group");
-		group.setCellValueFactory(new PropertyValueFactory<User, String>("primaryGroup"));
+		TableColumn<User, UUID> uuid = new TableColumn<>("UUID");
+		uuid.setCellValueFactory(new PropertyValueFactory<>("uuid"));
+		TableColumn<User, String> name = new TableColumn<>("Username");
+		name.setCellValueFactory(new PropertyValueFactory<>("name"));
+		TableColumn<User, String> group = new TableColumn<>("Group");
+		group.setCellValueFactory(new PropertyValueFactory<>("primaryGroup"));
 
 		userList.getColumns().addAll(uuid, name, group);
 	}

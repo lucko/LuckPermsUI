@@ -3,6 +3,7 @@ package me.lucko.luckperms.standalone.view.popup;
 import com.jfoenix.controls.JFXTextField;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.util.form.FormBase;
@@ -14,7 +15,8 @@ public class GroupDelete extends FormBase {
 
 	public GroupDelete(Manager view, Group group) {
 		super(view, "DELETE GROUP " + group.getName(),
-				Arrays.asList(new FormItem("Confirm with: '" + group.getName() + "'", new JFXTextField())),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
+				Collections.singletonList(new FormItem("Confirm with: '" + group.getName() + "'", new JFXTextField())),
+				Arrays.asList(FormResultType.OK, FormResultType.CANCEL)
+		);
 	}
 }
