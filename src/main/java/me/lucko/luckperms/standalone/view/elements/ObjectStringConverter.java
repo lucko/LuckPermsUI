@@ -8,16 +8,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class ObjectStringConverter<T> extends StringConverter<T> {
 
-	private Collection<T> list;
+    private Collection<T> list;
 
-	@Override
-	public T fromString(String string) {
-		for (T obj : list) {
-			if (toString(obj).equals(string)) {
-				return obj;
-			}
-		}
-		return null;
-	}
+    @Override
+    public T fromString(String string) {
+        for (T obj : list) {
+            if (toString(obj).equals(string)) {
+                return obj;
+            }
+        }
+        return null;
+    }
 
 }

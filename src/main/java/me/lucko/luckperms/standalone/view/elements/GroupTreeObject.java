@@ -9,7 +9,7 @@ import me.lucko.luckperms.common.groups.Group;
 @AllArgsConstructor
 public class GroupTreeObject extends RecursiveTreeObject<GroupTreeObject> {
 
-	@Getter
-	private Group group;
+    @Getter
+    private Group group;
 
 }

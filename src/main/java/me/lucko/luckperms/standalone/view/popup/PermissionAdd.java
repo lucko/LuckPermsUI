@@ -5,8 +5,8 @@ import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class PermissionAdd extends PermissionChange {
 
-	public PermissionAdd(Manager view, Group group) {
-		super(view, group, null, null, null, true);
-	}
+    public PermissionAdd(Manager view, Group group) {
+        super(view, group, null, null, null, true);
+    }
 
 }

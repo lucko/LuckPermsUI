@@ -9,7 +9,7 @@ import me.lucko.luckperms.api.Node;
 @AllArgsConstructor
 public class NodeTreeObject extends RecursiveTreeObject<NodeTreeObject> {
 
-	@Getter
-	private Node node;
+    @Getter
+    private Node node;
 
 }

@@ -11,9 +11,9 @@ import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class PermissionRemove extends FormBase {
 
-	public PermissionRemove(Manager view, Group group, Node perm) {
-		super(view, "Are you sure to remove the permission " + perm.getPermission() + " from " + group.getName() + "?",
-				new ArrayList<>(), Arrays.asList(FormResultType.YES, FormResultType.NO)
-		);
-	}
+    public PermissionRemove(Manager view, Group group, Node perm) {
+        super(view, "Are you sure to remove the permission " + perm.getPermission() + " from " + group.getName() + "?",
+                new ArrayList<>(), Arrays.asList(FormResultType.YES, FormResultType.NO)
+        );
+    }
 }

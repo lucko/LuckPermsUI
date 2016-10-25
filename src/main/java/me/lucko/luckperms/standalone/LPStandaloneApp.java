@@ -13,48 +13,49 @@ import me.lucko.luckperms.standalone.factory.SimpleViewFactory;
  * The main entry point into the application.
  */
 public class LPStandaloneApp extends Application {
-	public static final Font FONT;
+    public static final Font FONT;
 
-	static {
-		Font font = Font.loadFont(LPStandaloneApp.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
-		FONT = font == null ? Font.font(12) : font;
-	}
+    static {
+        Font font = Font.loadFont(LPStandaloneApp.class.getResourceAsStream("/assets/Ubuntu.ttf"), 12);
+        FONT = font == null ? Font.font(12) : font;
+    }
 
-	@Setter
-	private StandaloneBase base;
+    @Getter
+    @Setter
+    private StandaloneBase base;
 
-	@Getter
-	private Stage primaryStage;
+    @Getter
+    private Stage primaryStage;
 
-	public static void main(String[] args) {
-		Application.launch(args);
-	}
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		this.primaryStage = primaryStage;
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
 
-		SimpleViewFactory.getInstance().openLogin(this);
-		primaryStage.setTitle("LuckPermsUI");
-		primaryStage.show();
-	}
+        SimpleViewFactory.getInstance().openLogin(this);
+        primaryStage.setTitle("LuckPermsUI");
+        primaryStage.show();
+    }
 
-	public void setPrimaryScene(Scene scene) {
-		scene.getStylesheets().add(getClass().getResource("/assets/style.css").toExternalForm());
-		scene.getStylesheets().add(getClass().getResource("/resources/css/jfoenix-design.css").toExternalForm());
-		primaryStage.setScene(scene);
-	}
+    public void setPrimaryScene(Scene scene) {
+        scene.getStylesheets().add(getClass().getResource("/assets/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/resources/css/jfoenix-design.css").toExternalForm());
+        primaryStage.setScene(scene);
+    }
 
-	public void stop() {
-		if (base == null) {
-			return;
-		}
+    public void stop() {
+        if (base == null) {
+            return;
+        }
 
-		base.getLog().info("Closing datastore...");
-		base.shutdown();
+        base.getLog().info("Closing datastore...");
+        base.shutdown();
 
-		base.getLog().info("Unregistering API...");
-		ApiHandler.unregisterProvider();
-	}
+        base.getLog().info("Unregistering API...");
+        ApiHandler.unregisterProvider();
+    }
 
 }

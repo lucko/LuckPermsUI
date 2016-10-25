@@ -13,23 +13,23 @@ import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class PermissionChange extends FormBase {
 
-	public PermissionChange(Manager view, Group group, String node, String server, String world, boolean active) {
-		super(view, "Add permission for group: " + group.getName(),
-				Arrays.asList(new FormItem("Permission", new TextField(node == null ? "" : node)),
-					new FormItem("Server [optional]", new TextField(server == null ? "" : server)),
-					new FormItem("World [optional]", new TextField(world == null ? "" : world)),
-					new FormItem("Allow permission?", preDoneCheckbox(active))),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
-	}
+    public PermissionChange(Manager view, Group group, String node, String server, String world, boolean active) {
+        super(view, "Add permission for group: " + group.getName(),
+                Arrays.asList(new FormItem("Permission", new TextField(node == null ? "" : node)),
+                        new FormItem("Server [optional]", new TextField(server == null ? "" : server)),
+                        new FormItem("World [optional]", new TextField(world == null ? "" : world)),
+                        new FormItem("Allow permission?", preDoneCheckbox(active))),
+                Arrays.asList(FormResultType.OK, FormResultType.CANCEL));
+    }
 
-	public PermissionChange(Manager view, Group group, Node perms) {
-		this(view, group, perms.getPermission(), perms.getServer().orElse(null), perms.getWorld().orElse(null),
-				perms.getValue());
-	}
+    public PermissionChange(Manager view, Group group, Node perms) {
+        this(view, group, perms.getPermission(), perms.getServer().orElse(null), perms.getWorld().orElse(null),
+                perms.getValue());
+    }
 
-	private static CheckBox preDoneCheckbox(boolean selected) {
-		CheckBox checkBox = new CheckBox();
-		checkBox.setSelected(selected);
-		return checkBox;
-	}
+    private static CheckBox preDoneCheckbox(boolean selected) {
+        CheckBox checkBox = new CheckBox();
+        checkBox.setSelected(selected);
+        return checkBox;
+    }
 }

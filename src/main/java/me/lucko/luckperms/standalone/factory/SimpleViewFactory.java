@@ -2,6 +2,8 @@ package me.lucko.luckperms.standalone.factory;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import me.lucko.luckperms.standalone.LPStandaloneApp;
 import me.lucko.luckperms.common.groups.Group;
 import me.lucko.luckperms.standalone.StandaloneBase;
@@ -14,15 +16,13 @@ import me.lucko.luckperms.standalone.view.scene.Login;
 import me.lucko.luckperms.standalone.view.scene.Manager;
 import me.lucko.luckperms.standalone.view.sidepane.SideGroup;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SimpleViewFactory {
 
     private static final SimpleViewFactory INSTANCE = new SimpleViewFactory();
 
     public static SimpleViewFactory getInstance() {
         return INSTANCE;
-    }
-
-    private SimpleViewFactory() {
     }
 
     public void openManager(LPStandaloneApp app, StandaloneBase base) {
@@ -44,24 +44,23 @@ public class SimpleViewFactory {
         Login login = new Login(controller);
         app.setPrimaryScene(new Scene(login));
         stage.setResizable(false);
-	}
+    }
 
-	public void openGroup(Manager manager) {
-		GroupListManager view = new GroupListManager(manager);
-		GroupController controller = new GroupController(view, manager.getController().getBase());
-		view.registerController(controller);
-		manager.setMainView(view);
-	}
+    public void openGroup(Manager manager) {
+        GroupListManager view = new GroupListManager(manager);
+        GroupController controller = new GroupController(view, manager.getController().getBase());
+        view.registerController(controller);
+        manager.setMainView(view);
+    }
 
-	public void openUser(Manager manager) {
+    public void openUser(Manager manager) {
+        manager.setMainView(new UserManager(manager));
+    }
 
-		manager.setMainView(new UserManager(manager));
-	}
-
-	public SideGroup linkGroup(Group group, Manager parent, StandaloneBase base) {
-		SideGroup view = new SideGroup(parent, group);
-		GroupController controller = new GroupController(view, base);
-		view.setController(controller);
-		return view;
+    public SideGroup linkGroup(Group group, Manager parent, StandaloneBase base) {
+        SideGroup view = new SideGroup(parent, group);
+        GroupController controller = new GroupController(view, base);
+        view.setController(controller);
+        return view;
     }
 }

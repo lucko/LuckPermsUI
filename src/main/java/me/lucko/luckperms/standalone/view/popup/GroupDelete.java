@@ -13,10 +13,10 @@ import me.lucko.luckperms.standalone.view.scene.Manager;
 
 public class GroupDelete extends FormBase {
 
-	public GroupDelete(Manager view, Group group) {
-		super(view, "DELETE GROUP " + group.getName(),
-				Collections.singletonList(new FormItem("Confirm with: '" + group.getName() + "'", new JFXTextField())),
-				Arrays.asList(FormResultType.OK, FormResultType.CANCEL)
-		);
-	}
+    public GroupDelete(Manager view, Group group) {
+        super(view, "DELETE GROUP " + group.getName(),
+                Collections.singletonList(new FormItem("Confirm with: '" + group.getName() + "'", new JFXTextField())),
+                Arrays.asList(FormResultType.OK, FormResultType.CANCEL)
+        );
+    }
 }
